@@ -418,10 +418,10 @@ class TransaksiController extends BaseController
 
             if (file_exists($fotoPath)) {
                 $foto = $manager->read($fotoPath)
-                    ->resize(345, 270); // Sesuaikan ukuran dengan desain kartu
+                    ->resize(220, 221); // Sesuaikan ukuran dengan desain kartu
 
                 // Tempel di kiri atas
-                $image->place($foto, 'top-right', -21, 157);
+                $image->place($foto, 'top-right', 41, 180);
             }
         }
 
