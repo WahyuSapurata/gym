@@ -13,7 +13,7 @@
     <title>{{ config('app.name') . ' | ' . $module }}</title>
     <!--! END:  Apps Title-->
     <!--! BEGIN: Favicon-->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('logo_favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('logodark.PNG') }}">
     <!--! END: Favicon-->
     <!--! BEGIN: Bootstrap CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -41,7 +41,7 @@
         <div class="auth-cover-content-inner">
             <div class="auth-cover-content-wrapper">
                 <div class="auth-img">
-                    <img src="{{ asset('logo_full.png') }}" alt="" class="img-fluid">
+                    <img src="{{ asset('logodark.PNG') }}" alt="" class="img-fluid">
                 </div>
             </div>
         </div>
