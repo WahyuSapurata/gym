@@ -53,6 +53,20 @@ Route::group([
 
     Route::get('/cetak-invoice/{params}', [App\Http\Controllers\TransaksiController::class, 'invoiceView'])->name('cetak-invoice');
     Route::get('/cetak-kartu/{params}', [App\Http\Controllers\TransaksiController::class, 'cetak_kartu'])->name('cetak-kartu');
+
+    Route::get('/produk', [App\Http\Controllers\ProdukController::class, 'index'])->name('produk');
+    Route::get('/produk-get', [App\Http\Controllers\ProdukController::class, 'get'])->name('produk-get');
+    Route::post('/produk-store', [App\Http\Controllers\ProdukController::class, 'store'])->name('produk-store');
+    Route::get('produk-edit/{params}', [App\Http\Controllers\ProdukController::class, 'edit'])->name('produk-edit');
+    Route::post('/produk-update/{params}', [App\Http\Controllers\ProdukController::class, 'update'])->name('produk-update');
+    Route::delete('/produk-delete/{params}', [App\Http\Controllers\ProdukController::class, 'delete'])->name('produk-delete');
+
+    Route::get('/oprasional', [App\Http\Controllers\OperasionalController::class, 'index'])->name('oprasional');
+    Route::get('/oprasional-get', [App\Http\Controllers\OperasionalController::class, 'get'])->name('oprasional-get');
+    Route::post('/oprasional-store', [App\Http\Controllers\OperasionalController::class, 'store'])->name('oprasional-store');
+    Route::get('oprasional-edit/{params}', [App\Http\Controllers\OperasionalController::class, 'edit'])->name('oprasional-edit');
+    Route::post('/oprasional-update/{params}', [App\Http\Controllers\OperasionalController::class, 'update'])->name('oprasional-update');
+    Route::delete('/oprasional-delete/{params}', [App\Http\Controllers\OperasionalController::class, 'delete'])->name('oprasional-delete');
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth::class, 'logout'])->name('logout');

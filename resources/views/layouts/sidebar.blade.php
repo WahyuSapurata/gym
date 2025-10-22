@@ -50,15 +50,15 @@
                         </a>
                     </li>
 
-                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'paket' ? 'active' : '' }}">
-                        <a href="{{ route('admin.paket') }}" class="nxl-link">
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'produk' ? 'active' : '' }}">
+                        <a href="{{ route('admin.produk') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-layout"></i></span>
                             <span class="nxl-mtext">Produk</span>
                         </a>
                     </li>
 
-                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'paket' ? 'active' : '' }}">
-                        <a href="{{ route('admin.paket') }}" class="nxl-link">
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'oprasional' ? 'active' : '' }}">
+                        <a href="{{ route('admin.oprasional') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-truck"></i></span>
                             <span class="nxl-mtext">Operasional</span>
                         </a>
