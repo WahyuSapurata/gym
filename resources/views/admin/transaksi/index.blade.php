@@ -166,6 +166,33 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-edit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-labelledby="modal-editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-edit" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-edit">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Edit Tanggal Expired</h5>
+                        <button type="button" class="btn-close" id="btn-close-edit" data-bs-dismiss="modal-edit"
+                            aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">tanggal expired</label>
+                            <input type="text" name="tanggal_expired" id="tanggal_expired"
+                                class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -414,6 +441,44 @@
             });
         });
 
+        // Klik tombol edit
+        $('#dataTables').on('click', '.edit', function() {
+            let uuid = $(this).data('uuid');
+            $('#uuid-edit').val(uuid);
+
+            $.ajax({
+                url: '/admin/get-tanggal-expired/' + uuid,
+                type: 'GET',
+                success: function(res) {
+                    $('#tanggal_expired').val(res.data.expired_at);
+                    $('#modal-edit').modal('show');
+                }
+            });
+        });
+
+        $('#form-edit').on('submit', function(e) {
+            e.preventDefault();
+            let uuid = $('#uuid-edit').val();
+
+            $.ajax({
+                url: '/admin/edit-tanggal-expired/' + uuid,
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modal-edit').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
+                }
+            });
+        });
+
         $('#dataTables').on('click', '.cetak', function() {
             let uuid = $(this).data('uuid');
             window.open('/admin/cetak-invoice/' + uuid, '_blank');
@@ -479,6 +544,10 @@
                 width: 'auto',
                 padding: 0,
             });
+        });
+
+        $(document).on('click', '#btn-close-edit', function() {
+            $('#modal-edit').modal('hide');
         });
 
         const initDatatable = () => {
@@ -595,6 +664,9 @@
                                     </a>
                                     <a href="#" data-uuid="${data}" class="btn btn-outline-warning cetak-kartu btn-sm">
                                         Cetak Kartu
+                                    </a>
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-secondary edit btn-sm">
+                                        Edit Tanggal Expired
                                     </a>
                                     <a href="#" class="avatar-text avatar-md delete" data-uuid="${data}">
                                         <!-- Icon Delete -->

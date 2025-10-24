@@ -51,6 +51,10 @@ Route::group([
     Route::get('/konfirmasi-transaksi/{params}', [App\Http\Controllers\TransaksiController::class, 'konfirmasi'])->name('konfirmasi-transaksi');
     Route::get('/cancel-transaksi/{params}', [App\Http\Controllers\TransaksiController::class, 'cancel'])->name('cancel-transaksi');
 
+    Route::get('/get-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'getTanggalExpired'])->name('get-tanggal-expired');
+
+    Route::post('/edit-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'editTanggalExpired'])->name('edit-tanggal-expired');
+
     Route::get('/cetak-invoice/{params}', [App\Http\Controllers\TransaksiController::class, 'invoiceView'])->name('cetak-invoice');
     Route::get('/cetak-kartu/{params}', [App\Http\Controllers\TransaksiController::class, 'cetak_kartu'])->name('cetak-kartu');
 

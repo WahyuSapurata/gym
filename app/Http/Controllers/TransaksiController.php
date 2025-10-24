@@ -489,4 +489,47 @@ class TransaksiController extends BaseController
             'Content-Type' => 'image/jpeg',
         ]);
     }
+
+    public function getTanggalExpired($uuid)
+    {
+        $transaksi = Transaksi::where('uuid', $uuid)->firstOrFail();
+
+        // Ambil tanggal dari transaksi
+        $expired = $transaksi->tanggal_selesai;
+
+        // Ubah ke format Y-m-d agar cocok ke input date HTML
+        $expiredFormatted = Carbon::createFromFormat('d-m-Y', $expired)->format('d-m-Y');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'expired_at' => $expiredFormatted
+            ]
+        ]);
+    }
+
+    public function editTanggalExpired(Request $request, $uuid)
+    {
+        $transaksi = Transaksi::where('uuid', $uuid)->firstOrFail();
+
+        // Parse tanggal expired
+        $tanggalExpired = Carbon::createFromFormat('d-m-Y', $request->tanggal_expired);
+
+        // Update tanggal expired di transaksi
+        $transaksi->tanggal_selesai = $tanggalExpired->format('d-m-Y');
+        $transaksi->save();
+
+        // Update juga di member
+        $member = $transaksi->member;
+        if ($member) {
+            $member->expired_at = $tanggalExpired->format('d-m-Y');
+            $member->save();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Tanggal expired berhasil diperbarui.',
+            'data' => $transaksi,
+        ]);
+    }
 }
