@@ -503,8 +503,8 @@
                         class: 'mb-kolom-tanggal text-left align-content-center',
                         render: function(data, type, row) {
                             return `
-                                <span class="badge text-uppercase bg-${data === 'Aktiv' ? 'success' : 'danger'}">
-                                    ${data === 'Aktiv' ? 'Aktiv' : 'Non Aktiv'}
+                                <span class="badge text-uppercase bg-${data === 'aktif' ? 'success' : 'danger'}">
+                                    ${data === 'aktif' ? 'Aktiv' : 'Non Aktiv'}
                                 </span>
                             `;
                         }

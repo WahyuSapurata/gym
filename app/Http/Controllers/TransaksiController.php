@@ -417,8 +417,8 @@ class TransaksiController extends BaseController
             $fotoPath = storage_path('app/public/' . $member->foto_member);
 
             if (file_exists($fotoPath)) {
-                $foto = $manager->read($fotoPath)->resize(200, 220);
-                $image->place($foto, 'top-right', 50, 230);
+                $foto = $manager->read($fotoPath)->resize(225, 220);
+                $image->place($foto, 'top-right', 46, 211);
             }
         }
 
@@ -459,8 +459,8 @@ class TransaksiController extends BaseController
             });
 
             // Nilai
-            $image->text($value, $startX + $maxLabelWidth + 20, $startY, function ($font) use ($fontRegular) {
-                $font->filename($fontRegular);
+            $image->text($value, $startX + $maxLabelWidth + 20, $startY, function ($font) use ($fontBold) {
+                $font->filename($fontBold);
                 $font->size(20);
                 $font->color('#f0f0f0');
             });
