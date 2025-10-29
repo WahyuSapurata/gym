@@ -653,7 +653,7 @@
                         urlCancel = urlCancel.replace(':uuid', data);
                         return `
                                 <div class="hstack gap-2 justify-content-end">
-                                     <a href="#" data-uuid="${data}" class="btn btn-outline-success konfirmasi btn-sm">
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-success konfirmasi btn-sm">
                                         Konfirmasi
                                     </a>
                                     <a href="#" data-uuid="${data}" class="btn btn-outline-danger cancel btn-sm">
