@@ -417,8 +417,22 @@ class TransaksiController extends BaseController
             $fotoPath = storage_path('app/public/' . $member->foto_member);
 
             if (file_exists($fotoPath)) {
-                $foto = $manager->read($fotoPath)->resize(225, 220);
-                $image->place($foto, 'top-right', 46, 211);
+                // Ukuran dan posisi kotak foto di template (kanan atas)
+                $targetWidth = 180;
+                $targetHeight = 263;
+                $posX = 760;  // sesuaikan koordinat X sesuai posisi di template kamu
+                $posY = 188;  // sesuaikan koordinat Y sesuai posisi di template kamu
+
+                $foto = $manager->read($fotoPath);
+
+                // Resize proporsional dulu (fit ke kotak)
+                $foto->scaleDown($targetWidth, $targetHeight);
+
+                // Crop tengah jika masih lebih besar
+                $foto->cover($targetWidth, $targetHeight);
+
+                // Tempel ke posisi
+                $image->place($foto, 'top-left', $posX, $posY);
             }
         }
 
