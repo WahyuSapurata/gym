@@ -157,4 +157,19 @@ class ClasController extends BaseController
         $clas->delete();
         return response()->json(['status' => 'success']);
     }
+
+    public function getData()
+    {
+        $data = Clas::with('instruktur')->get();
+        return response()->json($data);
+    }
+
+    public function getDetail($params)
+    {
+        $clas = Clas::where('uuid', $params)->with('instruktur')->first();
+        if (!$clas) {
+            return response()->json(['status' => 'error', 'message' => 'Class not found'], 404);
+        }
+        return response()->json($clas);
+    }
 }

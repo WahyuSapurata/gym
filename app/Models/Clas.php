@@ -33,4 +33,9 @@ class Clas extends Model
             $model->uuid = Uuid::uuid4()->toString();
         });
     }
+
+    public function instruktur()
+    {
+        return $this->belongsTo(Instruktur::class, 'uuid_instruktur', 'uuid');
+    }
 }

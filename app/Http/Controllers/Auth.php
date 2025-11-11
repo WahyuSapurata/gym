@@ -160,9 +160,11 @@ class Auth extends BaseController
     public function do_login(RequestAuth $authRequest)
     {
         $user = User::where('username', $authRequest->username)->first();
-        $member = $user->members;
-        if ($member->status_member == null) {
-            return $this->sendError('Unauthorised.', ['error' => 'Akun belum di verifikasi Admin'], 401);
+        if ($user->role === 'member') {
+            $member = $user->members;
+            if ($member->status_member == null) {
+                return $this->sendError('Unauthorised.', ['error' => 'Akun belum di verifikasi Admin'], 401);
+            }
         }
 
         $credential = $authRequest->getCredentials();

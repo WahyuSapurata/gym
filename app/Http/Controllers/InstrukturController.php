@@ -158,4 +158,19 @@ class InstrukturController extends BaseController
 
         return response()->json($data);
     }
+
+    public function getDetail($uuid)
+    {
+        $instruktur = Instruktur::where('uuid', $uuid)->first();
+        if (!$instruktur) {
+            return response()->json(['message' => 'Instruktur not found'], 404);
+        }
+
+        // Kalau keahlian null → kasih array kosong
+        $subs = json_decode($instruktur->keahlian, true) ?? [];
+        // Ambil hanya value dari tagify
+        $instruktur->keahlian = collect($subs)->pluck('value')->toArray();
+
+        return response()->json($instruktur);
+    }
 }
