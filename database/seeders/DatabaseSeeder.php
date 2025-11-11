@@ -33,5 +33,16 @@ class DatabaseSeeder extends Seeder
                 'password_hash' => '<>password',
             ]
         );
+
+        User::updateOrCreate(
+            ['username' => 'kasir'],
+            [
+                'uuid' => Uuid::uuid4()->toString(),
+                'nama' => 'Kasir',
+                'role' => 'kasir',
+                'password' => Hash::make('<>password'),
+                'password_hash' => '<>password',
+            ]
+        );
     }
 }

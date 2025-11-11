@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\InstrukturController;
 use App\Http\Controllers\PaketController;
+use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +26,11 @@ Route::middleware('cors')->group(function () {
     Route::post('/api-login', [Auth::class, 'do_login']);
     Route::get('/api-banner', [BannerController::class, 'getData']);
     Route::get('/api-instruktur', [InstrukturController::class, 'getData']);
-    Route::get('/api-produk', [ProdukController::class, 'getData']);
     Route::middleware('auth:sanctum')->group(function () {
-
+        Route::middleware('role:kasir')->group(function () {
+            Route::get('/api-produk', [ProdukController::class, 'getData']);
+            Route::post('/api-penjualan', [PenjualanController::class, 'store']);
+        });
 
         Route::get('/api-logout', [Auth::class, 'revoke']);
     });
