@@ -129,4 +129,10 @@ class BannerController extends BaseController
         $banner->delete();
         return response()->json(['status' => 'success']);
     }
+
+    public function getData()
+    {
+        $banners = Banner::all();
+        return response()->json($banners);
+    }
 }
