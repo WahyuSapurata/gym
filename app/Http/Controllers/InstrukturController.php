@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInstrukturRequest;
 use App\Http\Requests\UpdateInstrukturRequest;
+use App\Models\Clas;
 use App\Models\Instruktur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -170,6 +171,10 @@ class InstrukturController extends BaseController
         $subs = json_decode($instruktur->keahlian, true) ?? [];
         // Ambil hanya value dari tagify
         $instruktur->keahlian = collect($subs)->pluck('value')->toArray();
+
+        $clas = Clas::where('uuid_instruktur', $uuid)
+            ->get();
+        $instruktur->clas = $clas;
 
         return response()->json($instruktur);
     }
