@@ -139,4 +139,9 @@ class ProdukController extends BaseController
         $produk->delete();
         return response()->json(['status' => 'success']);
     }
+
+    public function getData()
+    {
+        return response()->json(Produk::all());
+    }
 }

@@ -24,8 +24,8 @@ Route::middleware('cors')->group(function () {
     Route::post('/api-register', [Auth::class, 'register']);
     Route::post('/api-login', [Auth::class, 'do_login']);
     Route::get('/api-banner', [BannerController::class, 'getData']);
-    Route::get('/api-instruktur', [InstrukturController::class, 'get']);
-    Route::get('/api-produk', [ProdukController::class, 'get']);
+    Route::get('/api-instruktur', [InstrukturController::class, 'getData']);
+    Route::get('/api-produk', [ProdukController::class, 'getData']);
     Route::middleware('auth:sanctum')->group(function () {
 
 

@@ -143,4 +143,19 @@ class InstrukturController extends BaseController
         $instruktur->delete();
         return response()->json(['status' => 'success']);
     }
+
+    public function getData()
+    {
+        $data = Instruktur::select('uuid', 'nama', 'keahlian', 'pengalaman', 'foto_instruktur')
+            ->get()
+            ->map(function ($item) {
+                // Kalau keahlian null → kasih array kosong
+                $subs = json_decode($item->keahlian, true) ?? [];
+                // Ambil hanya value dari tagify
+                $item->keahlian = collect($subs)->pluck('value')->toArray();
+                return $item;
+            });
+
+        return response()->json($data);
+    }
 }
