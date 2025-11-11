@@ -6,19 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class Produk extends Model
+class Banner extends Model
 {
     use HasFactory;
 
-    protected $table = 'produks';
+    protected $table = 'banners';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'nama_produk',
-        'deskripsi',
-        'harga',
-        'stok',
-        'foto_produk',
+        'judul',
+        'gambar',
     ];
 
     protected static function boot()

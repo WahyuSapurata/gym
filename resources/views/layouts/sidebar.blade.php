@@ -36,10 +36,24 @@
                         </a>
                     </li>
 
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'instruktur' ? 'active' : '' }}">
+                        <a href="{{ route('admin.instruktur') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-user-check"></i></span>
+                            <span class="nxl-mtext">Instruktur</span>
+                        </a>
+                    </li>
+
                     <li class="nxl-item nxl-hasmenu {{ $path[1] === 'paket' ? 'active' : '' }}">
                         <a href="{{ route('admin.paket') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-package"></i></span>
                             <span class="nxl-mtext">Paket</span>
+                        </a>
+                    </li>
+
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'clas' ? 'active' : '' }}">
+                        <a href="{{ route('admin.clas') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-layers"></i></span>
+                            <span class="nxl-mtext">Class</span>
                         </a>
                     </li>
 
@@ -61,6 +75,13 @@
                         <a href="{{ route('admin.oprasional') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-truck"></i></span>
                             <span class="nxl-mtext">Operasional</span>
+                        </a>
+                    </li>
+
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'banner' ? 'active' : '' }}">
+                        <a href="{{ route('admin.banner') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-tv"></i></span>
+                            <span class="nxl-mtext">Banner</span>
                         </a>
                     </li>
 

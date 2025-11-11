@@ -61,9 +61,9 @@ class TransaksiController extends BaseController
             'transaksis.bukti',
         ];
 
-        $totalData = Transaksi::count();
+        $totalData = Transaksi::where('is_active', true)->count();
 
-        $query = Transaksi::select($columns)
+        $query = Transaksi::where('is_active', true)->select($columns)
             ->leftJoin('members', 'members.uuid', '=', 'transaksis.uuid_member')
             ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user')
             ->leftJoin('pakets', 'pakets.uuid', '=', 'transaksis.uuid_paket');
@@ -541,6 +541,58 @@ class TransaksiController extends BaseController
             'status' => 'success',
             'message' => 'Tanggal expired berhasil diperbarui.',
             'data' => $transaksi,
+        ]);
+    }
+
+    public function perpanjangMember($params)
+    {
+        $oldTransaksi = Transaksi::where('uuid', $params)->firstOrFail();
+        $member = $oldTransaksi->member;
+        $paket = $oldTransaksi->paket;
+
+        if (!$member || !$paket) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Member atau Paket tidak ditemukan.'
+            ], 404);
+        }
+
+        // Nonaktifkan transaksi lama
+        $oldTransaksi->is_active = false;
+        $oldTransaksi->save();
+
+        // Hitung tanggal baru
+        $tanggalMulai = Carbon::now();
+        $durasi = ($paket->durasi_hari ?? 0) > 0 ? $paket->durasi_hari : 60;
+        $tanggalSelesai = $tanggalMulai->copy()->addDays($durasi);
+
+        // Buat transaksi baru (aktif)
+        $newTransaksi = Transaksi::create([
+            'uuid' => (string) Str::uuid(),
+            'uuid_member' => $member->uuid,
+            'uuid_paket' => $paket->uuid,
+            'tipe_member' => $oldTransaksi->tipe_member,
+            'no_invoice' => 'INV-' . strtoupper(Str::random(6)) . '-' . date('dmY'),
+            'jenis_pembayaran' => 'cash',
+            'total_bayar' => $paket->harga ?? 0,
+            'tanggal_mulai' => $tanggalMulai->format('d-m-Y'),
+            'tanggal_selesai' => $tanggalSelesai->format('d-m-Y'),
+            'remaining_session' => $paket->jumlah_sesi ?? 0,
+            'status' => 'terkonfirmasi',
+            'is_active' => true,
+            'keterangan' => 'Perpanjangan dari transaksi ' . $oldTransaksi->no_invoice,
+        ]);
+
+        // Update masa aktif member
+        $member->expired_at = $tanggalSelesai->format('d-m-Y');
+        $member->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Masa aktif member berhasil diperpanjang.',
+            'data' => [
+                'expired_at' => $member->expired_at
+            ]
         ]);
     }
 }

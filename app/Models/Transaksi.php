@@ -24,6 +24,7 @@ class Transaksi extends Model
         'tanggal_selesai',
         'remaining_session',
         'status',
+        'is_active',
         'keterangan',
         'bukti',
     ];

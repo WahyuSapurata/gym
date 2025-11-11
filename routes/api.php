@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Auth;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\InstrukturController;
+use App\Http\Controllers\PaketController;
+use App\Http\Controllers\ProdukController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +19,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('cors')->group(function () {
+    Route::get('/api-paket', [PaketController::class, 'get']);
+    Route::post('/api-register', [Auth::class, 'register']);
+    Route::post('/api-login', [Auth::class, 'do_login']);
+    Route::get('/api-banner', [BannerController::class, 'get']);
+    Route::get('/api-instruktur', [InstrukturController::class, 'get']);
+    Route::get('/api-produk', [ProdukController::class, 'get']);
+    Route::middleware('auth:sanctum')->group(function () {
+
+
+        Route::get('/api-logout', [Auth::class, 'revoke']);
+    });
 });

@@ -42,6 +42,20 @@ Route::group([
     Route::post('/paket-update/{params}', [App\Http\Controllers\PaketController::class, 'update'])->name('paket-update');
     Route::delete('/paket-delete/{params}', [App\Http\Controllers\PaketController::class, 'delete'])->name('paket-delete');
 
+    Route::get('/clas', [App\Http\Controllers\ClasController::class, 'index'])->name('clas');
+    Route::get('/clas-get', [App\Http\Controllers\ClasController::class, 'get'])->name('clas-get');
+    Route::post('/clas-store', [App\Http\Controllers\ClasController::class, 'store'])->name('clas-store');
+    Route::get('clas-edit/{params}', [App\Http\Controllers\ClasController::class, 'edit'])->name('clas-edit');
+    Route::post('/clas-update/{params}', [App\Http\Controllers\ClasController::class, 'update'])->name('clas-update');
+    Route::delete('/clas-delete/{params}', [App\Http\Controllers\ClasController::class, 'delete'])->name('clas-delete');
+
+    Route::get('/instruktur', [App\Http\Controllers\InstrukturController::class, 'index'])->name('instruktur');
+    Route::get('/instruktur-get', [App\Http\Controllers\InstrukturController::class, 'get'])->name('instruktur-get');
+    Route::post('/instruktur-store', [App\Http\Controllers\InstrukturController::class, 'store'])->name('instruktur-store');
+    Route::get('instruktur-edit/{params}', [App\Http\Controllers\InstrukturController::class, 'edit'])->name('instruktur-edit');
+    Route::post('/instruktur-update/{params}', [App\Http\Controllers\InstrukturController::class, 'update'])->name('instruktur-update');
+    Route::delete('/instruktur-delete/{params}', [App\Http\Controllers\InstrukturController::class, 'delete'])->name('instruktur-delete');
+
     Route::get('/transaksi', [App\Http\Controllers\TransaksiController::class, 'index'])->name('transaksi');
     Route::get('/transaksi-get', [App\Http\Controllers\TransaksiController::class, 'get'])->name('transaksi-get');
     Route::post('/transaksi-store', [App\Http\Controllers\TransaksiController::class, 'store'])->name('transaksi-store');
@@ -54,6 +68,8 @@ Route::group([
     Route::get('/get-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'getTanggalExpired'])->name('get-tanggal-expired');
 
     Route::post('/edit-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'editTanggalExpired'])->name('edit-tanggal-expired');
+
+    Route::get('/perpanjang-member/{params}', [App\Http\Controllers\TransaksiController::class, 'perpanjangMember'])->name('perpanjang-member');
 
     Route::get('/cetak-invoice/{params}', [App\Http\Controllers\TransaksiController::class, 'invoiceView'])->name('cetak-invoice');
     Route::get('/cetak-kartu/{params}', [App\Http\Controllers\TransaksiController::class, 'cetak_kartu'])->name('cetak-kartu');
@@ -71,6 +87,13 @@ Route::group([
     Route::get('oprasional-edit/{params}', [App\Http\Controllers\OperasionalController::class, 'edit'])->name('oprasional-edit');
     Route::post('/oprasional-update/{params}', [App\Http\Controllers\OperasionalController::class, 'update'])->name('oprasional-update');
     Route::delete('/oprasional-delete/{params}', [App\Http\Controllers\OperasionalController::class, 'delete'])->name('oprasional-delete');
+
+    Route::get('/banner', [App\Http\Controllers\BannerController::class, 'index'])->name('banner');
+    Route::get('/banner-get', [App\Http\Controllers\BannerController::class, 'get'])->name('banner-get');
+    Route::post('/banner-store', [App\Http\Controllers\BannerController::class, 'store'])->name('banner-store');
+    Route::get('banner-edit/{params}', [App\Http\Controllers\BannerController::class, 'edit'])->name('banner-edit');
+    Route::post('/banner-update/{params}', [App\Http\Controllers\BannerController::class, 'update'])->name('banner-update');
+    Route::delete('/banner-delete/{params}', [App\Http\Controllers\BannerController::class, 'delete'])->name('banner-delete');
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth::class, 'logout'])->name('logout');

@@ -2,40 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProdukRequest;
-use App\Http\Requests\UpdateProdukRequest;
-use App\Models\Produk;
+use App\Http\Requests\StoreBannerRequest;
+use App\Http\Requests\UpdateBannerRequest;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class ProdukController extends BaseController
+class BannerController extends BaseController
 {
     public function index()
     {
-        $module = 'Produk';
-        return view('admin.produk.index', compact('module'));
+        $module = 'Banner';
+        return view('admin.banner.index', compact('module'));
     }
 
     public function get(Request $request)
     {
         $columns = [
             'uuid',
-            'nama_produk',
-            'deskripsi',
-            'harga',
-            'stok',
-            'foto_produk',
+            'judul',
+            'gambar',
         ];
 
-        $totalData = Produk::count();
+        $totalData = Banner::count();
 
-        $query = Produk::select(
+        $query = Banner::select(
             'uuid',
-            'nama_produk',
-            'deskripsi',
-            'harga',
-            'stok',
-            'foto_produk',
+            'judul',
+            'gambar',
         );
 
         // Searching
@@ -73,22 +67,20 @@ class ProdukController extends BaseController
         ]);
     }
 
-    public function store(StoreProdukRequest $request)
+    public function store(StoreBannerRequest $request)
     {
         $path = null;
-        if ($request->hasFile('foto_produk')) {
+        if ($request->hasFile('gambar')) {
             // Buat nama unik
-            $fileName = time() . '_' . uniqid() . '.' . $request->foto_produk->extension();
+            $fileName = time() . '_' . uniqid() . '.' . $request->gambar->extension();
 
             // Simpan di storage/app/public/foto_produk
-            $path = $request->foto_produk->storeAs('foto_produk', $fileName, 'public');
+            $path = $request->gambar->storeAs('gambar', $fileName, 'public');
         }
-        Produk::create([
-            'nama_produk' => $request->nama_produk,
-            'deskripsi' => $request->deskripsi,
-            'harga' => preg_replace('/\D/', '', $request->harga),
-            'stok' => $request->stok,
-            'foto_produk' => $path,
+
+        Banner::create([
+            'judul' => $request->judul,
+            'gambar' => $path,
         ]);
 
         return response()->json(['status' => 'success']);
@@ -96,31 +88,29 @@ class ProdukController extends BaseController
 
     public function edit($params)
     {
-        return response()->json(Produk::where('uuid', $params)->first());
+        return response()->json(Banner::where('uuid', $params)->first());
     }
 
-    public function update(StoreProdukRequest $update, $params)
+    public function update(StoreBannerRequest $update, $params)
     {
-        $produk = Produk::where('uuid', $params)->first();
-        $path = $produk->foto_produk;
+        $kategori = Banner::where('uuid', $params)->first();
+        // Simpan path lama
+        $path = $kategori->gambar;
 
         // Jika ada upload baru
-        if ($update->hasFile('foto_produk')) {
+        if ($update->hasFile('gambar')) {
             // Hapus foto lama jika ada
             if ($path && Storage::disk('public')->exists($path)) {
                 Storage::disk('public')->delete($path);
             }
 
             // Simpan foto baru
-            $fileName = time() . '_' . uniqid() . '.' . $update->file('foto_produk')->extension();
-            $path = $update->file('foto_produk')->storeAs('foto_produk', $fileName, 'public');
+            $fileName = time() . '_' . uniqid() . '.' . $update->file('gambar')->extension();
+            $path = $update->file('gambar')->storeAs('gambar', $fileName, 'public');
         }
-        $produk->update([
-            'nama_produk' => $update->nama_produk,
-            'deskripsi' => $update->deskripsi,
-            'harga' => preg_replace('/\D/', '', $update->harga),
-            'stok' => $update->stok,
-            'foto_produk' => $path,
+        $kategori->update([
+            'judul' => $update->judul,
+            'gambar' => $path,
         ]);
 
         return response()->json(['status' => 'success']);
@@ -128,15 +118,15 @@ class ProdukController extends BaseController
 
     public function delete($params)
     {
-        $produk = Produk::where('uuid', $params)->first();
+        $banner = Banner::where('uuid', $params)->first();
 
         // Hapus foto_member jika ada
-        if ($produk->foto_produk && Storage::disk('public')->exists($produk->foto_produk)) {
-            Storage::disk('public')->delete($produk->foto_produk);
+        if ($banner->gambar && Storage::disk('public')->exists($banner->gambar)) {
+            Storage::disk('public')->delete($banner->gambar);
         }
 
         // Hapus data member dan user
-        $produk->delete();
+        $banner->delete();
         return response()->json(['status' => 'success']);
     }
 }

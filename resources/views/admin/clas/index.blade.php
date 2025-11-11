@@ -1,14 +1,4 @@
 @extends('layouts.layout')
-<style>
-    .custom-card-action .table-responsive .table tbody tr:last-child .btn {
-        border: 1px solid;
-    }
-
-    .custom-card-action .table-responsive .table tbody tr:last-child .btn:hover {
-        background-color: var(--bs-btn-hover-bg);
-        border-color: var(--bs-btn-hover-border-color);
-    }
-</style>
 @section('content')
     <div class="nxl-content">
         <div class="page-header">
@@ -74,13 +64,14 @@
                                     <thead>
                                         <tr>
                                             <th class="text-capitalize">No</th>
-                                            <th class="text-capitalize">member</th>
-                                            <th class="text-capitalize">paket</th>
+                                            <th class="text-capitalize">instruktur</th>
+                                            <th class="text-capitalize">nama class</th>
+                                            <th class="text-capitalize">harga</th>
+                                            <th class="text-capitalize">kategori</th>
+                                            <th class="text-capitalize">jadwal</th>
                                             <th class="text-capitalize">durasi</th>
-                                            <th class="text-capitalize">sesi</th>
-                                            <th class="text-capitalize">tanggal expired</th>
-                                            <th class="text-capitalize">bukti</th>
-                                            <th class="text-capitalize">status</th>
+                                            <th class="text-capitalize">slot</th>
+                                            <th class="text-capitalize">banner</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
                                     </thead>
@@ -107,46 +98,48 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-2">
-                            <label class="text-capitalize form-label">nama member</label>
-                            <select id="uuid_member" name="uuid_member" data-placeholder="Pilih inputan"
-                                class="form-select basic-usage">
-                                <option value="">-- Pilih nama member --</option>
-                                @foreach ($member as $m)
-                                    <option value="{{ $m->uuid }}">{{ $m->nama }}</option>
-                                @endforeach
-                            </select>
-                            <div class="invalid-feedback"></div>
-                        </div>
-
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">nama paket</label>
-                            <select id="uuid_paket" name="uuid_paket" data-placeholder="Pilih inputan"
-                                class="form-select basic-usage">
-                                <option value="">-- Pilih nama paket --</option>
-                                @foreach ($paket as $p)
-                                    <option value="{{ $p->uuid }}">{{ $p->nama_paket }}</option>
-                                @endforeach
-                            </select>
-                            <div class="invalid-feedback"></div>
-                        </div>
-
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">jenis pembayaran</label>
-                            <select id="jenis_pembayaran" name="jenis_pembayaran" data-placeholder="Pilih inputan"
+                            <label class="text-capitalize form-label">instruktur</label>
+                            <select name="uuid_instruktur" id="uuid_instruktur" data-placeholder="Pilih inputan"
                                 class="form-select basic-usage">
                                 <option value=""></option>
-                                <option value="Tunai">Tunai</option>
-                                <option value="Transfer">Transfer</option>
+                                @foreach ($instruktur as $ins)
+                                    <option value="{{ $ins->uuid }}" data-original="true">{{ $ins->nama }}</option>
+                                @endforeach
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-2">
-                            <label class="text-capitalize form-label">keterangan</label>
-                            <textarea class="form-control" name="keterangan" cols="30" rows="4"></textarea>
+                            <label class="text-capitalize form-label">nama class</label>
+                            <input type="text" name="nama_clas" id="nama_clas" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-2">
-                            <label class="text-capitalize form-label">Bukti</label>
+                            <label class="text-capitalize form-label">harga</label>
+                            <input type="text" name="harga" id="harga" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">kategori</label>
+                            <input type="text" name="kategori" id="kategori" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">jadwal</label>
+                            <input type="text" name="jadwal" id="jadwal" class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">durasi</label>
+                            <input type="number" name="durasi" id="durasi" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">slot</label>
+                            <input type="number" name="slot" id="slot" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">Foto</label>
                             <div class="wd-100 ht-100 position-relative overflow-hidden border border-gray-2 rounded">
                                 <img src="{{ asset('assets/images/logo-abbr.png') }}"
                                     class="upload-pic img-fluid rounded h-100 w-100" alt="">
@@ -154,35 +147,8 @@
                                     class="position-absolute start-50 top-50 end-0 bottom-0 translate-middle h-100 w-100 hstack align-items-center justify-content-center c-pointer upload-button">
                                     <i class="feather feather-camera" aria-hidden="true"></i>
                                 </div>
-                                <input class="file-upload" type="file" name="bukti" accept="image/*">
-                                <div class="invalid-feedback"></div>
+                                <input class="file-upload" type="file" name="banner" accept="image/*">
                             </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-edit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
-        aria-labelledby="modal-editLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form id="form-edit" enctype="multipart/form-data">
-                <input type="hidden" name="uuid" id="uuid-edit">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Form Edit Tanggal Expired</h5>
-                        <button type="button" class="btn-close" id="btn-close-edit" data-bs-dismiss="modal-edit"
-                            aria-label="Tutup"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">tanggal expired</label>
-                            <input type="text" name="tanggal_expired" id="tanggal_expired"
-                                class="form-control dateofBirth">
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
@@ -195,6 +161,8 @@
     </div>
 @endsection
 @push('scripts')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         function initSelect2(element) {
             element.select2({
@@ -208,16 +176,6 @@
         // Init select2 pertama kali
         $('.basic-usage').each(function() {
             initSelect2($(this));
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll(".dateofBirth").forEach(function(el) {
-                new Datepicker(el, {
-                    format: "dd-mm-yyyy",
-                    autohide: true,
-                    clearBtn: true
-                });
-            });
         });
 
         function formatRupiah(angka) {
@@ -235,6 +193,21 @@
             rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
             return rupiah ? 'Rp ' + rupiah : '';
         }
+
+        $('#harga').on('input', function() {
+            $(this).val(formatRupiah(this.value));
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr(".dateofBirth", {
+                enableTime: true, // tampilkan jam
+                dateFormat: "d-m-Y H:i", // format: 11-11-2025 23:45
+                time_24hr: true, // pakai format 24 jam
+                allowInput: true, // boleh diketik manual
+                altInput: true, // tampilkan versi cantik
+                altFormat: "d-m-Y H:i",
+            });
+        });
 
         // Pasang CSRF token untuk semua request AJAX
         $.ajaxSetup({
@@ -274,11 +247,11 @@
 
             let uuid = $('#uuid').val();
 
-            let updateUrl = `{{ route('admin.transaksi-update', ':uuid') }}`;
+            let updateUrl = `{{ route('admin.clas-update', ':uuid') }}`;
             updateUrl = updateUrl.replace(':uuid', uuid);
 
             let url = uuid ? updateUrl :
-                `{{ route('admin.transaksi-store') }}`;
+                `{{ route('admin.clas-store') }}`;
             let method = uuid ? 'POST' : 'POST';
 
             let formData = new FormData(this);
@@ -337,213 +310,74 @@
         });
 
         // Edit
-        // $('#dataTables').on('click', '.edit', function() {
-        //     // Buka modal
-        //     // Hapus error lama
-        //     $('.is-invalid').removeClass('is-invalid');
-        //     $('.invalid-feedback').remove();
-        //     $('#modal').modal('show');
-        //     let uuid = $(this).data('uuid');
-        //     let editUrl = `{{ route('admin.transaksi-edit', ':uuid') }}`;
-        //     editUrl = editUrl.replace(':uuid', uuid);
-        //     $.get(editUrl, function(res) {
-        //         $.each(res, function(key, value) {
-        //             let $field = $(`[name="${key}"]`);
-
-        //             if (!$field.length) return;
-
-        //             let type = $field.attr('type');
-        //             const typeRadio = $(`[name="${key}"]`).attr('type');
-
-        //             if ($field.hasClass('select2-hidden-accessible')) {
-        //                 $field.val(value).trigger('change');
-        //             }
-        //             // Datepicker
-        //             else if ($field.hasClass('datepicker')) {
-        //                 $field.datepicker('update', value);
-        //             } else if (typeRadio === 'radio' || typeRadio === 'checkbox') {
-        //                 $(`[name="${key}"]`).prop('checked', false);
-        //                 if (value) {
-        //                     $(`[name="${key}"][value="${value}"]`).prop('checked', true);
-        //                 }
-        //             }
-        //             // File
-        //             else if (type === 'file') {
-        //                 // Jika ada file, tampilkan preview
-        //                 if (value) {
-        //                     $field.closest('.mb-2').find('.upload-pic')
-        //                         .attr('src', `{{ asset('storage') }}/${value}`);
-        //                 } else {
-        //                     $field.closest('.mb-2').find('.upload-pic')
-        //                         .attr('src', '{{ asset('assets/images/logo-abbr.png') }}');
-        //                 }
-        //             } else if (key === 'harga') {
-        //                 // Kalau harga, format ke Rupiah saat set value
-        //                 $(`[name="${key}"]`).val(formatRupiah(value.toString()));
-        //             }
-        //             // Default
-        //             else {
-        //                 $field.val(value);
-        //             }
-        //         });
-        //     });
-        // });
-
-        $('#dataTables').on('click', '.konfirmasi', function() {
-            let uuid = $(this).data('uuid');
-
-            $.ajax({
-                url: '/admin/konfirmasi-transaksi/' + uuid,
-                type: 'GET',
-                success: function(res) {
-                    Swal.fire({
-                        title: "Sukses",
-                        text: res.message,
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                    $('#dataTables').DataTable().ajax.reload(null, false);
-                },
-                error: function(err) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Gagal mengkonfirmasi transaksi.",
-                        icon: "error",
-                    });
-                }
-            });
-        });
-
-        $('#dataTables').on('click', '.cancel', function() {
-            let uuid = $(this).data('uuid');
-
-            $.ajax({
-                url: '/admin/cancel-transaksi/' + uuid,
-                type: 'GET',
-                success: function(res) {
-                    Swal.fire({
-                        title: "Sukses",
-                        text: res.message,
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                    $('#dataTables').DataTable().ajax.reload(null, false);
-                },
-                error: function(err) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Gagal membatalkan transaksi.",
-                        icon: "error",
-                    });
-                }
-            });
-        });
-
-        // Klik tombol edit
         $('#dataTables').on('click', '.edit', function() {
+            // Buka modal
+            // Hapus error lama
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            $('#modal').modal('show');
             let uuid = $(this).data('uuid');
-            $('#uuid-edit').val(uuid);
+            let editUrl = `{{ route('admin.clas-edit', ':uuid') }}`;
+            editUrl = editUrl.replace(':uuid', uuid);
+            $.get(editUrl, function(res) {
+                $.each(res, function(key, value) {
+                    let $field = $(`[name="${key}"]`);
 
-            $.ajax({
-                url: '/admin/get-tanggal-expired/' + uuid,
-                type: 'GET',
-                success: function(res) {
-                    $('#tanggal_expired').val(res.data.expired_at);
-                    $('#modal-edit').modal('show');
-                }
-            });
-        });
+                    if (!$field.length) return;
 
-        $('#form-edit').on('submit', function(e) {
-            e.preventDefault();
-            let uuid = $('#uuid-edit').val();
+                    let type = $field.attr('type');
+                    const typeRadio = $(`[name="${key}"]`).attr('type');
 
-            $.ajax({
-                url: '/admin/edit-tanggal-expired/' + uuid,
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(res) {
-                    Swal.fire({
-                        title: "Berhasil",
-                        text: res.message,
-                        icon: "success",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+                    if ($field.hasClass('select2-hidden-accessible')) {
+                        $field.val(value).trigger('change');
+                    }
+                    // Datepicker
+                    else if ($field.hasClass('dateofBirth')) {
+                        console.log('tes');
 
-                    $('#modal-edit').modal('hide');
-                    $('#dataTables').DataTable().ajax.reload();
-                }
-            });
-        });
-
-        $('#dataTables').on('click', '.perpanjang-member', function(e) {
-            e.preventDefault(); // hindari reload default
-
-            let uuid = $(this).data('uuid');
-
-            Swal.fire({
-                title: 'Perpanjang Member?',
-                text: 'Apakah kamu yakin ingin memperpanjang masa aktif member ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Perpanjang',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/admin/perpanjang-member/' + uuid,
-                        type: 'GET',
-                        success: function(res) {
-                            if (res.status === 'success') {
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: res.message + ' Tanggal expired baru: ' + res
-                                        .data.expired_at,
-                                    icon: 'success',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-
-                                // Optional: reload tabel setelah perpanjangan
-                                $('#dataTables').DataTable().ajax.reload(null, false);
-                            } else {
-                                Swal.fire({
-                                    title: 'Gagal',
-                                    text: res.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            Swal.fire({
-                                title: 'Terjadi Kesalahan',
-                                text: xhr.responseJSON?.message ||
-                                    'Gagal memperpanjang member.',
-                                icon: 'error'
-                            });
+                        if ($field[0]._flatpickr) {
+                            $field[0]._flatpickr.setDate(value,
+                                true); // true = trigger change event
+                        } else {
+                            // kalau flatpickr belum aktif, aktifkan dulu
+                            flatpickr($field[0], {
+                                enableTime: true,
+                                dateFormat: "d-m-Y H:i",
+                                time_24hr: true,
+                            }).setDate(value, true);
                         }
-                    });
-                }
+                    } else if (typeRadio === 'radio' || typeRadio === 'checkbox') {
+                        $(`[name="${key}"]`).prop('checked', false);
+                        if (value) {
+                            $(`[name="${key}"][value="${value}"]`).prop('checked', true);
+                        }
+                    }
+                    // File
+                    else if (type === 'file') {
+                        // Jika ada file, tampilkan preview
+                        if (value) {
+                            $field.closest('.mb-2').find('.upload-pic')
+                                .attr('src', `{{ asset('storage') }}/${value}`);
+                        } else {
+                            $field.closest('.mb-2').find('.upload-pic')
+                                .attr('src', '{{ asset('assets/images/logo-abbr.png') }}');
+                        }
+                    } else if (key === 'harga') {
+                        // Kalau harga, format ke Rupiah saat set value
+                        $(`[name="${key}"]`).val(formatRupiah(value.toString()));
+                    }
+                    // Default
+                    else {
+                        $field.val(value);
+                    }
+                });
             });
-        });
-
-        $('#dataTables').on('click', '.cetak', function() {
-            let uuid = $(this).data('uuid');
-            window.open('/admin/cetak-invoice/' + uuid, '_blank');
-        });
-
-        $('#dataTables').on('click', '.cetak-kartu', function() {
-            let uuid = $(this).data('uuid');
-            window.open('/admin/cetak-kartu/' + uuid, '_blank');
         });
 
         // Hapus
         $('#dataTables').on('click', '.delete', function() {
             let uuid = $(this).data('uuid');
-            let deleteUrl = `{{ route('admin.transaksi-delete', ':uuid') }}`;
+            let deleteUrl = `{{ route('admin.clas-delete', ':uuid') }}`;
             deleteUrl = deleteUrl.replace(':uuid', uuid);
 
             Swal.fire({
@@ -585,22 +419,6 @@
             });
         });
 
-        $(document).on('click', '.img-clickable', function() {
-            const fullImage = $(this).data('full');
-            Swal.fire({
-                imageUrl: fullImage,
-                imageAlt: 'Preview Bukti',
-                showConfirmButton: false,
-                background: '#000',
-                width: 'auto',
-                padding: 0,
-            });
-        });
-
-        $(document).on('click', '#btn-close-edit', function() {
-            $('#modal-edit').modal('hide');
-        });
-
         const initDatatable = () => {
             // Destroy existing DataTable if it exists
             if ($.fn.DataTable.isDataTable('#dataTables')) {
@@ -612,7 +430,7 @@
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.transaksi-get') }}",
+                ajax: "{{ route('admin.clas-get') }}",
                 columns: [{
                         data: null,
                         class: 'mb-kolom-nomor align-content-center',
@@ -621,68 +439,45 @@
                         }
                     },
                     {
-                        data: 'nama_member',
+                        data: 'nama_instruktur',
                         class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
-                        data: 'nama_paket',
+                        data: 'nama_clas',
                         class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
-                        data: 'durasi_hari',
+                        data: 'harga',
                         class: 'mb-kolom-text text-left align-content-center',
                         render: function(data, type, row) {
-                            // Format durasi hari ke angka
-                            return data ? data + ' Hari' :
-                                '<span class="text-muted">Tidak ada durasi</span>';
+                            // Format jumlah ke Rupiah
+                            return formatRupiah(data.toString());
                         }
                     },
                     {
-                        data: 'remaining_session',
-                        class: 'mb-kolom-tanggal text-left align-content-center',
-                        render: function(data, type, row) {
-                            // Format total sesi ke angka
-                            return data ? data + ' Sesi' :
-                                '<span class="text-muted">Tidak ada sesi</span>';
-                        }
-
+                        data: 'kategori',
+                        class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
-                        data: 'expired_at',
-                        class: 'mb-kolom-tanggal text-left align-content-center',
-                        render: function(data, type, row) {
-                            return `
-                                <span class="badge text-uppercase bg-success">
-                                    ${data}
-                                </span>
-                            `;
-                        }
+                        data: 'jadwal',
+                        class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
-                        data: 'bukti',
+                        data: 'durasi',
+                        class: 'mb-kolom-text text-left align-content-center'
+                    },
+                    {
+                        data: 'slot',
+                        class: 'mb-kolom-text text-left align-content-center'
+                    },
+                    {
+                        data: 'banner',
                         render: function(data, type, row) {
                             if (data) {
-                                const imageUrl = `{{ asset('storage') }}/${data}`;
-                                return `
-                <img src="${imageUrl}"
-                     class="img-thumbnail img-clickable"
-                     style="max-width: 50px; cursor:pointer;"
-                     data-full="${imageUrl}">
-            `;
+                                return `<img src="{{ asset('storage') }}/${data}" class="img-fluid rounded" style="max-width: 300px;">`;
                             }
                             return '<span class="text-muted">Tidak ada foto</span>';
                         },
-                    },
-                    {
-                        data: 'status',
-                        class: 'mb-kolom-tanggal text-left align-content-center',
-                        render: function(data, type, row) {
-                            return `
-                                <span class="badge text-uppercase bg-${data === 'paid' ? 'warning' : data === 'cancelled' ? 'danger' : 'success'}">
-                                    ${data}
-                                </span>
-                            `;
-                        }
                     },
                     {
                         data: 'uuid', // akan diganti di columnDefs
@@ -695,32 +490,16 @@
                     title: 'Aksi',
                     class: 'mb-kolom-aksi text-end',
                     render: function(data, type, row) {
-                        let urlKonfirmasi =
-                            "{{ route('admin.konfirmasi-transaksi', ['params' => ':uuid']) }}";
-                        urlKonfirmasi = urlKonfirmasi.replace(':uuid', data);
-
-                        let urlCancel =
-                            "{{ route('admin.cancel-transaksi', ['params' => ':uuid']) }}";
-                        urlCancel = urlCancel.replace(':uuid', data);
                         return `
                                 <div class="hstack gap-2 justify-content-end">
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-success konfirmasi btn-sm">
-                                        Konfirmasi
-                                    </a>
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-danger cancel btn-sm">
-                                        Cancel
-                                    </a>
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-info cetak btn-sm">
-                                        Cetak Invoice
-                                    </a>
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-warning cetak-kartu btn-sm">
-                                        Cetak Kartu
-                                    </a>
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-secondary edit btn-sm">
-                                        Edit Tanggal Expired
-                                    </a>
-                                    <a href="#" data-uuid="${data}" class="btn btn-outline-success perpanjang-member btn-sm">
-                                        Perpanjang Member
+                                    <a href="#" class="avatar-text avatar-md edit" data-uuid="${data}">
+                                        <!-- Icon Edit -->
+                                        <svg stroke="currentColor" fill="none" stroke-width="2"
+                                            viewBox="0 0 24 24" stroke-linecap="round"
+                                            stroke-linejoin="round" height="1em" width="1em">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
                                     </a>
                                     <a href="#" class="avatar-text avatar-md delete" data-uuid="${data}">
                                         <!-- Icon Delete -->

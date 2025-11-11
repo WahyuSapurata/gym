@@ -64,11 +64,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-capitalize">No</th>
-                                            <th class="text-capitalize">nama produk</th>
-                                            <th class="text-capitalize">harga</th>
-                                            <th class="text-capitalize">stok</th>
-                                            <th class="text-capitalize">deskripsi</th>
-                                            <th class="text-capitalize">foto produk</th>
+                                            <th class="text-capitalize">judul</th>
+                                            <th class="text-capitalize">foto</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
                                     </thead>
@@ -95,23 +92,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-2">
-                            <label class="text-capitalize form-label">nama produk</label>
-                            <input type="text" name="nama_produk" id="nama_produk" class="form-control">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">harga</label>
-                            <input type="text" name="harga" id="harga" class="form-control">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">stok</label>
-                            <input type="text" name="stok" id="stok" class="form-control">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="text-capitalize form-label">deskripsi</label>
-                            <textarea class="form-control" name="deskripsi" cols="30" rows="4"></textarea>
+                            <label class="text-capitalize form-label">judul</label>
+                            <input type="text" name="judul" id="judul" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-2">
@@ -123,7 +105,7 @@
                                     class="position-absolute start-50 top-50 end-0 bottom-0 translate-middle h-100 w-100 hstack align-items-center justify-content-center c-pointer upload-button">
                                     <i class="feather feather-camera" aria-hidden="true"></i>
                                 </div>
-                                <input class="file-upload" type="file" name="foto_produk" accept="image/*">
+                                <input class="file-upload" type="file" name="gambar" accept="image/*">
                             </div>
                             <div class="invalid-feedback"></div>
                         </div>
@@ -150,26 +132,6 @@
         // Init select2 pertama kali
         $('.basic-usage').each(function() {
             initSelect2($(this));
-        });
-
-        function formatRupiah(angka) {
-            let number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-            return rupiah ? 'Rp ' + rupiah : '';
-        }
-
-        $('#harga').on('input', function() {
-            $(this).val(formatRupiah(this.value));
         });
 
         // Pasang CSRF token untuk semua request AJAX
@@ -210,11 +172,11 @@
 
             let uuid = $('#uuid').val();
 
-            let updateUrl = `{{ route('admin.produk-update', ':uuid') }}`;
+            let updateUrl = `{{ route('admin.banner-update', ':uuid') }}`;
             updateUrl = updateUrl.replace(':uuid', uuid);
 
             let url = uuid ? updateUrl :
-                `{{ route('admin.produk-store') }}`;
+                `{{ route('admin.banner-store') }}`;
             let method = uuid ? 'POST' : 'POST';
 
             let formData = new FormData(this);
@@ -280,7 +242,7 @@
             $('.invalid-feedback').remove();
             $('#modal').modal('show');
             let uuid = $(this).data('uuid');
-            let editUrl = `{{ route('admin.produk-edit', ':uuid') }}`;
+            let editUrl = `{{ route('admin.banner-edit', ':uuid') }}`;
             editUrl = editUrl.replace(':uuid', uuid);
             $.get(editUrl, function(res) {
                 $.each(res, function(key, value) {
@@ -313,9 +275,6 @@
                             $field.closest('.mb-2').find('.upload-pic')
                                 .attr('src', '{{ asset('assets/images/logo-abbr.png') }}');
                         }
-                    } else if (key === 'harga') {
-                        // Kalau harga, format ke Rupiah saat set value
-                        $(`[name="${key}"]`).val(formatRupiah(value.toString()));
                     }
                     // Default
                     else {
@@ -328,7 +287,7 @@
         // Hapus
         $('#dataTables').on('click', '.delete', function() {
             let uuid = $(this).data('uuid');
-            let deleteUrl = `{{ route('admin.produk-delete', ':uuid') }}`;
+            let deleteUrl = `{{ route('admin.banner-delete', ':uuid') }}`;
             deleteUrl = deleteUrl.replace(':uuid', uuid);
 
             Swal.fire({
@@ -381,7 +340,7 @@
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.produk-get') }}",
+                ajax: "{{ route('admin.banner-get') }}",
                 columns: [{
                         data: null,
                         class: 'mb-kolom-nomor align-content-center',
@@ -390,35 +349,14 @@
                         }
                     },
                     {
-                        data: 'nama_produk',
+                        data: 'judul',
                         class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
-                        data: 'harga',
-                        class: 'mb-kolom-tanggal text-left align-content-center',
-                        render: function(data, type, row) {
-                            // Format jumlah ke Rupiah
-                            return formatRupiah(data.toString());
-                        }
-                    },
-                    {
-                        data: 'stok',
-                        class: 'mb-kolom-text text-left align-content-center'
-                    },
-                    {
-                        data: 'deskripsi',
-                        class: 'mb-kolom-tanggal text-left align-content-center',
-                        render: function(data, type, row) {
-                            // Format jumlah ke Rupiah
-                            return data ? data :
-                                '<span class="text-muted">Tidak ada deskripsi</span>';
-                        }
-                    },
-                    {
-                        data: 'foto_produk',
+                        data: 'gambar',
                         render: function(data, type, row) {
                             if (data) {
-                                return `<img src="{{ asset('storage') }}/${data}" class="img-fluid rounded" style="max-width: 100px;">`;
+                                return `<img src="{{ asset('storage') }}/${data}" class="img-fluid rounded" style="max-width: 300px;">`;
                             }
                             return '<span class="text-muted">Tidak ada foto</span>';
                         },
