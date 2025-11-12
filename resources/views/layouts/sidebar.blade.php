@@ -85,6 +85,13 @@
                         </a>
                     </li>
 
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'laporan' ? 'active' : '' }}">
+                        <a href="{{ route('admin.laporan') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-book"></i></span>
+                            <span class="nxl-mtext">Laporan</span>
+                        </a>
+                    </li>
+
                     <li class="nxl-item nxl-hasmenu {{ $path[1] === 'banner' ? 'active' : '' }}">
                         <a href="{{ route('admin.banner') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-tv"></i></span>

@@ -100,6 +100,9 @@ Route::group([
     Route::get('/konfirmasi-transaksi-clas/{params}', [App\Http\Controllers\TransaksiClasController::class, 'konfirmasi'])->name('konfirmasi-transaksi-clas');
     Route::get('/cancel-transaksi-clas/{params}', [App\Http\Controllers\TransaksiClasController::class, 'cancel'])->name('cancel-transaksi-clas');
     Route::delete('/transaksi-clas-delete/{params}', [App\Http\Controllers\TransaksiClasController::class, 'delete'])->name('transaksi-clas-delete');
+
+    Route::get('/laoran', [App\Http\Controllers\Laporan::class, 'index'])->name('laporan');
+    Route::get('/laporan-get', [App\Http\Controllers\Laporan::class, 'get'])->name('laporan-get');
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth::class, 'logout'])->name('logout');
