@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clas;
+use App\Models\Instruktur;
+use App\Models\Member;
+use App\Models\Paket;
 use Illuminate\Http\Request;
 
 class Dashboard extends BaseController
@@ -17,6 +21,10 @@ class Dashboard extends BaseController
     public function dashboard_admin()
     {
         $module = 'Dashboard Admin';
-        return view('admin.dashboard.index', compact('module'));
+        $member = Member::count();
+        $instruktur = Instruktur::count();
+        $paket = Paket::count();
+        $clas = Clas::count();
+        return view('admin.dashboard.index', compact('module', 'member', 'instruktur', 'paket', 'clas'));
     }
 }
