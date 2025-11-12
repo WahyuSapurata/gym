@@ -94,6 +94,12 @@ Route::group([
     Route::get('banner-edit/{params}', [App\Http\Controllers\BannerController::class, 'edit'])->name('banner-edit');
     Route::post('/banner-update/{params}', [App\Http\Controllers\BannerController::class, 'update'])->name('banner-update');
     Route::delete('/banner-delete/{params}', [App\Http\Controllers\BannerController::class, 'delete'])->name('banner-delete');
+
+    Route::get('/transaksi-clas', [App\Http\Controllers\TransaksiClasController::class, 'index'])->name('transaksi-clas');
+    Route::get('/transaksi-clas-get', [App\Http\Controllers\TransaksiClasController::class, 'get'])->name('transaksi-clas-get');
+    Route::get('/konfirmasi-transaksi-clas/{params}', [App\Http\Controllers\TransaksiClasController::class, 'konfirmasi'])->name('konfirmasi-transaksi-clas');
+    Route::get('/cancel-transaksi-clas/{params}', [App\Http\Controllers\TransaksiClasController::class, 'cancel'])->name('cancel-transaksi-clas');
+    Route::delete('/transaksi-clas-delete/{params}', [App\Http\Controllers\TransaksiClasController::class, 'delete'])->name('transaksi-clas-delete');
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth::class, 'logout'])->name('logout');

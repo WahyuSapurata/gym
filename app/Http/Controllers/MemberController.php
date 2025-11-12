@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -208,5 +209,36 @@ class MemberController extends BaseController
         $user->delete();
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function getMemberDetail($uuid)
+    {
+        $member = Member::where('uuid', $uuid)->first();
+        if (!$member) {
+            return response()->json(['status' => 'error', 'message' => 'Member not found'], 404);
+        }
+
+        $transaksi = Transaksi::where('uuid_member', $member->uuid)
+            ->where('is_active', true)
+            ->with(['paket'])
+            ->first();
+        if (!$transaksi) {
+            return response()->json(['status' => 'error', 'message' => 'No active transaction found for this member'], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'uuid_member' => $member->uuid,
+                'nama_member' => $member->user->nama,
+                'member_id' => $member->member_id,
+                'nomor_telepon' => $member->nomor_telepon,
+                'jenis_kelamin' => $member->jenis_kelamin,
+                'expired_at' => $member->expired_at,
+                'foto_member' => $member->foto_member ? $member->foto_member : null,
+                'tanggal_mulai' => $transaksi->tanggal_mulai,
+                'tanggal_selesai' => $transaksi->tanggal_selesai,
+                'paket' => $transaksi->paket ? $transaksi->paket->nama_paket : null,
+            ]
+        ]);
     }
 }

@@ -595,4 +595,39 @@ class TransaksiController extends BaseController
             ]
         ]);
     }
+
+    public function getDataByMemberid($params)
+    {
+        $member = Member::where('member_id', $params)->first();
+        if (!$member) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Member tidak ditemukan.'
+            ], 404);
+        }
+        $transaksi = Transaksi::where('uuid_member', $member->uuid)
+            ->where('is_active', true)
+            ->with(['paket'])
+            ->first();
+        if (!$transaksi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaksi aktif tidak ditemukan untuk member ini.'
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'uuid_member' => $member->uuid,
+                'nama_member' => $member->user->nama,
+                'member_id' => $member->member_id,
+                'nomor_telepon' => $member->nomor_telepon,
+                'jenis_kelamin' => $member->jenis_kelamin,
+                'expired_at' => $member->expired_at,
+                'foto_member' => $member->foto_member ? $member->foto_member : null,
+                'tanggal_mulai' => $transaksi->tanggal_mulai,
+                'tanggal_selesai' => $transaksi->tanggal_selesai,
+            ]
+        ]);
+    }
 }

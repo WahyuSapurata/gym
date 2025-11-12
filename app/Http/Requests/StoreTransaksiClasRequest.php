@@ -11,7 +11,7 @@ class StoreTransaksiClasRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,24 @@ class StoreTransaksiClasRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required',
+            'nomor_telepon' => 'required',
+            'tanggal_lahir' => 'required',
+            'bukti_pembayaran' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'nama.required' => 'Kolom nama harus di isi.',
+            'jenis_kelamin.required' => 'Kolom jenis kelamin harus di isi.',
+            'alamat.required' => 'Kolom alamat harus di isi.',
+            'nomor_telepon.required' => 'Kolom nomor telepon harus di isi.',
+            'tanggal_lahir.required' => 'Kolom tanggal lahir harus di isi.',
+            'bukti_pembayaran.required' => 'Kolom bukti pembayaran harus di isi.',
         ];
     }
 }

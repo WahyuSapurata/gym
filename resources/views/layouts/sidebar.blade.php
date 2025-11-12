@@ -64,6 +64,13 @@
                         </a>
                     </li>
 
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'transaksi-clas' ? 'active' : '' }}">
+                        <a href="{{ route('admin.transaksi-clas') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-credit-card"></i></span>
+                            <span class="nxl-mtext">Transaksi Class</span>
+                        </a>
+                    </li>
+
                     <li class="nxl-item nxl-hasmenu {{ $path[1] === 'produk' ? 'active' : '' }}">
                         <a href="{{ route('admin.produk') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-layout"></i></span>

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('tanggal_lahir');
             $table->string('total_bayar');
             $table->string('bukti_pembayaran');
+            $table->string('status');
             $table->timestamps();
         });
     }

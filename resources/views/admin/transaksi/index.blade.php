@@ -651,11 +651,36 @@
                         data: 'expired_at',
                         class: 'mb-kolom-tanggal text-left align-content-center',
                         render: function(data, type, row) {
-                            return `
-                                <span class="badge text-uppercase bg-success">
-                                    ${data}
-                                </span>
-                            `;
+                            if (!data) return `<span class="badge bg-secondary">-</span>`;
+
+                            // Parsing format d-m-Y → Date object
+                            const parts = data.split('-'); // contoh: ["12", "11", "2025"]
+                            const expiredDate = new Date(parts[2], parts[1] - 1, parts[
+                                0]); // (tahun, bulan-1, tanggal)
+
+                            const today = new Date();
+                            // Hilangkan jam agar perhitungan hari lebih akurat
+                            today.setHours(0, 0, 0, 0);
+                            expiredDate.setHours(0, 0, 0, 0);
+
+                            const diffTime = expiredDate - today;
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                            let badgeClass = "bg-success"; // default warna hijau
+                            let label = data;
+
+                            if (diffDays <= 7 && diffDays > 2) {
+                                badgeClass = "bg-warning text-dark"; // kuning
+                            } else if (diffDays <= 2 && diffDays >= 0) {
+                                badgeClass = "bg-danger"; // merah
+                            } else if (diffDays < 0) {
+                                badgeClass = "bg-secondary"; // abu-abu (expired)
+                                label += " (expired)";
+                            }
+
+                            return `<span class="badge text-uppercase ${badgeClass}">
+                                        ${label}
+                                </span>`;
                         }
                     },
                     {
@@ -664,11 +689,11 @@
                             if (data) {
                                 const imageUrl = `{{ asset('storage') }}/${data}`;
                                 return `
-                <img src="${imageUrl}"
-                     class="img-thumbnail img-clickable"
-                     style="max-width: 50px; cursor:pointer;"
-                     data-full="${imageUrl}">
-            `;
+                                    <img src="${imageUrl}"
+                                        class="img-thumbnail img-clickable"
+                                        style="max-width: 50px; cursor:pointer;"
+                                        data-full="${imageUrl}">
+                                `;
                             }
                             return '<span class="text-muted">Tidak ada foto</span>';
                         },
