@@ -78,7 +78,7 @@ class Auth extends BaseController
                 'alamat'        => $register->alamat,
                 'berat_badan'   => $register->berat_badan,
                 'tinggi_badan'  => $register->tinggi_badan,
-                'tgl_registrasi' => $register->tgl_registrasi,
+                'tgl_registrasi' => now()->format('d-m-Y'),
                 'nomor_telepon' => $register->nomor_telepon,
                 'foto_member'   => $path,
             ]);
