@@ -172,7 +172,8 @@ class Auth extends BaseController
             $token = $authRequest->user()->createToken('tokenAPI')->plainTextToken;
             $data = [
                 'token' => $token,
-                'user' => $user
+                'user' => $user,
+                'member' => $user->members ? $user->members : null,
             ];
 
             return $this->sendResponse($data, 'Berhasil login.');
