@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('cors')->group(function () {
     Route::get('/api-paket', [PaketController::class, 'get']);
-    Route::post('/api-register', [Auth::class, 'register']);
+    Route::post('/api-register', [Auth::class, 'registrasi']);
     Route::post('/api-login', [Auth::class, 'do_login']);
     Route::get('/api-banner', [BannerController::class, 'getData']);
     Route::get('/api-instruktur', [InstrukturController::class, 'getData']);
