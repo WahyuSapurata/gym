@@ -162,7 +162,7 @@ class Auth extends BaseController
         $user = User::where('username', $authRequest->username)->first();
         if ($user->role === 'member') {
             $member = $user->members;
-            if ($member->status_member == null) {
+            if ($member->status_member != null) {
                 return $this->sendError('Unauthorised.', ['error' => 'Akun belum di verifikasi Admin'], 401);
             }
         }
