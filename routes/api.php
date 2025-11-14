@@ -42,7 +42,7 @@ Route::middleware('cors')->group(function () {
             Route::get('/api-produk', [ProdukController::class, 'getData']);
             Route::post('/api-penjualan', [PenjualanController::class, 'store']);
 
-            Route::get('/api-get-by-memberid', [TransaksiController::class, 'getDataByMemberid']);
+            Route::get('/api-get-by-memberid/{member_id}', [TransaksiController::class, 'getDataByMemberid']);
         });
 
         Route::middleware('role:member')->group(function () {
