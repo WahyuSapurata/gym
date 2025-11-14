@@ -148,7 +148,7 @@ class PaketController extends BaseController
 
     public function getDataPaket()
     {
-        $pakets = Paket::where('status', 'active')->get();
+        $pakets = Paket::all();
         return response()->json($pakets);
     }
 }
