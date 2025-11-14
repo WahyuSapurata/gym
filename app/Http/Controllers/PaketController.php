@@ -145,4 +145,10 @@ class PaketController extends BaseController
 
         return response()->json(['status' => 'success']);
     }
+
+    public function getDataPaket()
+    {
+        $pakets = Paket::where('status', 'active')->get();
+        return response()->json($pakets);
+    }
 }
