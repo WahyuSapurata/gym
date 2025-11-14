@@ -159,44 +159,25 @@ class Auth extends BaseController
 
     public function do_login(RequestAuth $authRequest)
     {
+        $user = User::where('username', $authRequest->username)->first();
+        // if ($user->role === 'member') {
+        //     $member = $user->members;
+        //     if ($member->status_member != 'aktif') {
+        //         return $this->sendError('Unauthorised.', ['error' => 'Akun belum di verifikasi Admin'], 401);
+        //     }
+        // }
+
         $credential = $authRequest->getCredentials();
-
-        // 1. Coba otentikasi (cek username & password)
         if (FacadesAuth::attempt($credential)) {
-
-            // 2. Jika berhasil, ambil data user yang sedang login
-            $user = FacadesAuth::user();
-            $member = null; // Inisialisasi variabel member
-
-            // 3. Lakukan pengecekan role & status SETELAH login berhasil
-            if ($user->role === 'member') {
-
-                // 4. Ambil data relasi 'members'
-                // PASTIKAN relasi di Model User adalah hasOne()
-                // Jika relasinya hasMany(), Anda harus gunakan $user->members->first()
-                $member = $user->members;
-
-                // 5. Cek apakah data member ada & statusnya
-                if (!$member || $member->status_member != 'aktif') {
-
-                    // 6. Jika tidak aktif, paksa logout lagi & kirim error
-                    FacadesAuth::logout();
-                    return $this->sendError('Unauthorised.', ['error' => 'Akun belum di verifikasi Admin'], 401);
-                }
-            }
-
-            // 7. Jika lolos semua cek, baru buat token
             $token = $authRequest->user()->createToken('tokenAPI')->plainTextToken;
-
             $data = [
                 'token' => $token,
                 'user' => $user,
-                'member' => $member, // Kirim data member (akan null jika role-nya bukan member)
+                'member' => $user->members ? $user->members : null,
             ];
 
             return $this->sendResponse($data, 'Berhasil login.');
         } else {
-            // 8. Jika 'Auth::attempt' gagal, baru kirim error username/password salah
             return $this->sendError('Unauthorised.', ['error' => 'Username atau Password Salah'], 401);
         }
     }
