@@ -34,6 +34,8 @@ Route::group([
     Route::get('data-member-edit/{params}', [App\Http\Controllers\MemberController::class, 'edit'])->name('data-member-edit');
     Route::post('/data-member-update/{params}', [App\Http\Controllers\MemberController::class, 'update'])->name('data-member-update');
     Route::delete('/data-member-delete/{params}', [App\Http\Controllers\MemberController::class, 'delete'])->name('data-member-delete');
+    Route::get('/edit-member-id/{params}', [App\Http\Controllers\MemberController::class, 'editMemberid'])->name('edit-member-id');
+    Route::post('/update-member-id/{params}', [App\Http\Controllers\MemberController::class, 'updateMemberid'])->name('update-member-id');
 
     Route::get('/paket', [App\Http\Controllers\PaketController::class, 'index'])->name('paket');
     Route::get('/paket-get', [App\Http\Controllers\PaketController::class, 'get'])->name('paket-get');

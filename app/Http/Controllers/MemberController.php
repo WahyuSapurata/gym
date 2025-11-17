@@ -211,6 +211,39 @@ class MemberController extends BaseController
         return response()->json(['status' => 'success']);
     }
 
+    public function editMemberid($params)
+    {
+        $member = Member::where('uuid', $params)->first();
+        if (!$member) {
+            return response()->json(['status' => 'error', 'message' => 'Member not found'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'uuid_member' => $member->uuid,
+                'member_id' => $member->member_id,
+            ]
+        ]);
+    }
+
+    public function updateMemberid(Request $request, $params)
+    {
+        $member = Member::where('uuid', $params)->first();
+        if (!$member) {
+            return response()->json(['status' => 'error', 'message' => 'Member not found'], 404);
+        }
+
+        // Validasi member_id
+        $request->validate([
+            'member_id' => 'required|string|max:255|unique:members,member_id,' . $member->id,
+        ]);
+
+        $member->update(['member_id' => $request->member_id]);
+
+        return response()->json(['status' => 'success']);
+    }
+
     public function getMemberDetail($uuid)
     {
         $member = Member::where('uuid', $uuid)->first();

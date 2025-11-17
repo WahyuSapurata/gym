@@ -206,6 +206,32 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-edit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-labelledby="modal-editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-edit" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-edit">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Edit Member ID</h5>
+                        <button type="button" class="btn-close" id="btn-close-edit" data-bs-dismiss="modal-edit"
+                            aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">member id</label>
+                            <input type="text" name="member_id" id="member_id" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -221,16 +247,6 @@
         // Init select2 pertama kali
         $('.basic-usage').each(function() {
             initSelect2($(this));
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll(".dateofBirth").forEach(function(el) {
-                new Datepicker(el, {
-                    format: "dd-mm-yyyy",
-                    autohide: true,
-                    clearBtn: true
-                });
-            });
         });
 
         // Pasang CSRF token untuk semua request AJAX
@@ -428,6 +444,48 @@
             });
         });
 
+        // Klik tombol edit
+        $('#dataTables').on('click', '.editMemberId', function() {
+            let uuid = $(this).data('uuid');
+            $('#uuid-edit').val(uuid);
+
+            $.ajax({
+                url: '/admin/edit-member-id/' + uuid,
+                type: 'GET',
+                success: function(res) {
+                    $('#member_id').val(res.data.member_id);
+                    $('#modal-edit').modal('show');
+                }
+            });
+        });
+
+        $('#form-edit').on('submit', function(e) {
+            e.preventDefault();
+            let uuid = $('#uuid-edit').val();
+
+            $.ajax({
+                url: '/admin/update-member-id/' + uuid,
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modal-edit').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-close-edit', function() {
+            $('#modal-edit').modal('hide');
+        });
+
         const initDatatable = () => {
             // Destroy existing DataTable if it exists
             if ($.fn.DataTable.isDataTable('#dataTables')) {
@@ -559,6 +617,9 @@
                                             <line x1="10" y1="11" x2="10" y2="17"></line>
                                             <line x1="14" y1="11" x2="14" y2="17"></line>
                                         </svg>
+                                    </a>
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-secondary editMemberId btn-sm">
+                                        Edit Member ID
                                     </a>
                                 </div>
                     `;
