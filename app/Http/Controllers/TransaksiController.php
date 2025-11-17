@@ -367,7 +367,7 @@ class TransaksiController extends BaseController
             'invoice_no'     => $transaksi->no_invoice,
             'tanggal'        => \Carbon\Carbon::parse($transaksi->tanggal_mulai)->translatedFormat('d F Y'),
             'nama_member'    => $transaksi->member->user->nama,
-            'no_member'      => $transaksi->member->kode_member ?? 'M-' . $transaksi->member->id,
+            'no_member'      => $transaksi->member->member_id,
             'telepon'        => $transaksi->member->nomor_telepon,
             'paket'          => $transaksi->paket->nama_paket,
             'periode_mulai'  => \Carbon\Carbon::parse($transaksi->tanggal_mulai)->translatedFormat('d F Y'),
