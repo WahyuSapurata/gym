@@ -41,7 +41,7 @@
         <div class="main-content">
             <div class="row">
                 <!-- [Payment Records] start -->
-                <div class="col-xxl-8">
+                <div class="col-12">
                     <div class="card stretch stretch-full">
                         <div class="card-header">
                             <h5 class="card-title">Data GYM</h5>
