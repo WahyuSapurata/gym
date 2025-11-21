@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTransaksiRequest;
 use App\Models\Member;
 use App\Models\Paket;
 use App\Models\Transaksi;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -632,9 +633,9 @@ class TransaksiController extends BaseController
         ]);
     }
 
-    public function getTransaksiByMemberUuid()
+    public function getTransaksiByMemberUuid($params)
     {
-        $user = Auth::user();
+        $user = User::where('uuid', $params)->first();
         $member = Member::where('uuid_user', $user->uuid)->first();
         if (!$member || $member->uuid) {
             return response()->json([
