@@ -134,6 +134,56 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12">
+                    <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h5 class="card-title">Data GYM</h5>
+                            <div class="card-header-action">
+                                <div class="card-header-btn">
+                                    <div data-bs-toggle="tooltip" title="Delete">
+                                        <a href="javascript:void(0);" class="avatar-text avatar-xs bg-danger"
+                                            data-bs-toggle="remove"> </a>
+                                    </div>
+                                    <div data-bs-toggle="tooltip" title="Refresh">
+                                        <a href="javascript:void(0);" class="avatar-text avatar-xs bg-warning"
+                                            data-bs-toggle="refresh"> </a>
+                                    </div>
+                                    <div data-bs-toggle="tooltip" title="Maximize/Minimize">
+                                        <a href="javascript:void(0);" class="avatar-text avatar-xs bg-success"
+                                            data-bs-toggle="expand"> </a>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <a href="javascript:void(0);" class="avatar-text avatar-sm" data-bs-toggle="dropdown"
+                                        data-bs-offset="25, 25">
+                                        <div data-bs-toggle="tooltip" title="Options">
+                                            <i class="feather-more-vertical"></i>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-at-sign"></i>New</a>
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-calendar"></i>Event</a>
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-bell"></i>Snoozed</a>
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-trash-2"></i>Deleted</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-settings"></i>Settings</a>
+                                        <a href="javascript:void(0);" class="dropdown-item"><i
+                                                class="feather-life-buoy"></i>Tips & Tricks</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body custom-card-action p-0">
+                            <canvas id="chart-member" height="120"></canvas>
+                        </div>
+                    </div>
+                </div>
                 <!-- [Payment Records] end -->
             </div>
         </div>
@@ -142,4 +192,57 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('assets/js/dashboard-init.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        $.ajax({
+            url: "/admin/chart-tipe-member",
+            type: "GET",
+            success: function(res) {
+
+                // Fungsi buat random color RGBA
+                function randomColor() {
+                    return 'rgba(' +
+                        Math.floor(Math.random() * 255) + ',' +
+                        Math.floor(Math.random() * 255) + ',' +
+                        Math.floor(Math.random() * 255) + ',0.6)';
+                }
+
+                // generate warna sesuai jumlah data
+                let backgroundColors = [];
+                let borderColors = [];
+
+                for (let i = 0; i < res.data.length; i++) {
+                    let color = randomColor();
+                    backgroundColors.push(color);
+                    borderColors.push(color.replace("0.6", "1"));
+                }
+
+                new Chart(document.getElementById("chart-member"), {
+                    type: "bar",
+                    data: {
+                        labels: res.labels,
+                        datasets: [{
+                            label: "Jumlah Member",
+                            data: res.data,
+                            backgroundColor: backgroundColors,
+                            borderColor: borderColors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 @endpush

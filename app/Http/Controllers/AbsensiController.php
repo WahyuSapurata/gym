@@ -84,4 +84,15 @@ class AbsensiController extends BaseController
         ]);
         return response()->json(['message' => 'Absensi berhasil ditambahkan.']);
     }
+
+    public function getAbsensiApi()
+    {
+        $absensis = Absensi::with(['member.user'])
+            ->selectRaw('DATE(created_at) as tanggal, COUNT(*) as total')
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return response()->json($absensis);
+    }
 }

@@ -276,9 +276,18 @@ class Laporan extends BaseController
         ]);
 
         // Total paling bawah
+        // ==== Total di paling bawah ====
+        $saldoAkhir = 0;
+        foreach ($data as $item) {
+            $saldoAkhir += ($item['masuk'] - $item['keluar']);
+        }
+
+        // Merge kolom A-C untuk label TOTAL
         $sheet->mergeCells('A' . $row . ':C' . $row);
         $sheet->setCellValue('A' . $row, 'TOTAL');
-        $sheet->setCellValue('D' . $row, '=SUM(D2:D' . ($row - 1) . ')');
+
+        // Set saldo akhir pada kolom D
+        $sheet->setCellValue('D' . $row, $saldoAkhir);
 
         $sheet->getStyle('A' . $row . ':D' . $row)->applyFromArray([
             'font' => ['bold' => true],

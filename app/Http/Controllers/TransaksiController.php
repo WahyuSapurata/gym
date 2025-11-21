@@ -81,6 +81,21 @@ class TransaksiController extends BaseController
             });
         }
 
+        // ========== FILTER EXPIRED =============
+        if ($request->filter_expired !== null && $request->filter_expired !== "") {
+            $today = Carbon::today();
+
+            if ($request->filter_expired == "0") {
+                // Sudah expired
+                $query->whereDate('members.expired_at', '<', $today);
+            } else {
+                $days = intval($request->filter_expired);
+
+                $query->whereDate('members.expired_at', '>=', $today)
+                    ->whereDate('members.expired_at', '<=', $today->copy()->addDays($days));
+            }
+        }
+
         $totalFiltered = $query->count();
 
         // Sorting
@@ -508,6 +523,7 @@ class TransaksiController extends BaseController
         $transaksi = Transaksi::where('uuid', $uuid)->firstOrFail();
 
         // Ambil tanggal dari transaksi
+        $mulai = $transaksi->tanggal_mulai;
         $expired = $transaksi->tanggal_selesai;
 
         // Ubah ke format Y-m-d agar cocok ke input date HTML
@@ -516,6 +532,7 @@ class TransaksiController extends BaseController
         return response()->json([
             'status' => 'success',
             'data' => [
+                'mulai' => $mulai,
                 'expired_at' => $expiredFormatted
             ]
         ]);
@@ -526,9 +543,11 @@ class TransaksiController extends BaseController
         $transaksi = Transaksi::where('uuid', $uuid)->firstOrFail();
 
         // Parse tanggal expired
+        $tanggalMulai = Carbon::createFromFormat('d-m-Y', $request->tanggal_mulai);
         $tanggalExpired = Carbon::createFromFormat('d-m-Y', $request->tanggal_expired);
 
         // Update tanggal expired di transaksi
+        $transaksi->tanggal_mulai = $tanggalMulai->format('d-m-Y');
         $transaksi->tanggal_selesai = $tanggalExpired->format('d-m-Y');
         $transaksi->save();
 
@@ -546,11 +565,25 @@ class TransaksiController extends BaseController
         ]);
     }
 
-    public function perpanjangMember($params)
+    public function getDataPerpanjang($params)
+    {
+        $transaksi = Transaksi::with(['member', 'paket'])->where('uuid', $params)->first();
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaksi
+        ]);
+    }
+
+    public function perpanjangMember(Request $request, $params)
     {
         $oldTransaksi = Transaksi::where('uuid', $params)->firstOrFail();
         $member = $oldTransaksi->member;
-        $paket = $oldTransaksi->paket;
+
+        if ($request->uuid_paket) {
+            $paket = Paket::where('uuid', $request->uuid_paket)->first();
+        } else {
+            $paket = $oldTransaksi->paket;
+        }
 
         if (!$member || !$paket) {
             return response()->json([
@@ -564,9 +597,9 @@ class TransaksiController extends BaseController
         $oldTransaksi->save();
 
         // Hitung tanggal baru
-        $tanggalMulai = Carbon::now();
+        $tanggalMulai = $request->tanggal_mulai ? $request->tanggal_mulai : Carbon::now()->format('d-m-Y');
         $durasi = ($paket->durasi_hari ?? 0) > 0 ? $paket->durasi_hari : 60;
-        $tanggalSelesai = $tanggalMulai->copy()->addDays($durasi);
+        $tanggalSelesai = $request->tanggal_expired ? $request->tanggal_expired : $tanggalMulai->copy()->addDays($durasi);
 
         // Buat transaksi baru (aktif)
         $newTransaksi = Transaksi::create([
@@ -575,10 +608,10 @@ class TransaksiController extends BaseController
             'uuid_paket' => $paket->uuid,
             'tipe_member' => $oldTransaksi->tipe_member,
             'no_invoice' => 'INV-' . strtoupper(Str::random(6)) . '-' . date('dmY'),
-            'jenis_pembayaran' => 'cash',
+            'jenis_pembayaran' => $request->jenis_pembayaran ?? 'Tunai',
             'total_bayar' => $paket->harga ?? 0,
-            'tanggal_mulai' => $tanggalMulai->format('d-m-Y'),
-            'tanggal_selesai' => $tanggalSelesai->format('d-m-Y'),
+            'tanggal_mulai' => $tanggalMulai,
+            'tanggal_selesai' => $tanggalSelesai,
             'remaining_session' => $paket->jumlah_sesi ?? 0,
             'status' => 'terkonfirmasi',
             'is_active' => true,
@@ -586,7 +619,7 @@ class TransaksiController extends BaseController
         ]);
 
         // Update masa aktif member
-        $member->expired_at = $tanggalSelesai->format('d-m-Y');
+        $member->expired_at = $tanggalSelesai;
         $member->save();
 
         return response()->json([

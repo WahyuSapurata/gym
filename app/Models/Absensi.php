@@ -28,4 +28,9 @@ class Absensi extends Model
             $model->uuid = Uuid::uuid4()->toString();
         });
     }
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'uuid_member', 'uuid');
+    }
 }

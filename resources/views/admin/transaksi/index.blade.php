@@ -70,6 +70,15 @@
                         </div>
                         <div class="card-body custom-card-action p-0">
                             <div class="table-responsive">
+                                <div class="m-3">
+                                    <label for="" class="form-label">Filter Data</label>
+                                    <select id="filter-expired" class="form-select" style="width:200px;">
+                                        <option value="">Semua</option>
+                                        <option value="7">Expired ≤ 7 Hari</option>
+                                        <option value="2">Expired ≤ 2 Hari</option>
+                                        <option value="0">Expired</option>
+                                    </select>
+                                </div>
                                 <table style="width: 100%" id="dataTables" class="table table-hover mb-0">
                                     <thead>
                                         <tr>
@@ -167,6 +176,64 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modal-edit-perpanjang" tabindex="-1" data-bs-backdrop="static"
+        data-bs-keyboard="false" aria-labelledby="modal-edit-perpanjangLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-edit-perpanjang" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-edit-perpanjangan">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Perpanjangan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Tanggal Mulai</label>
+                            <input type="text" name="tanggal_mulai" id="tanggal_mulai"
+                                class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Tanggal Expired</label>
+                            <input type="text" name="tanggal_expired" id="tanggal_expired"
+                                class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Nama Paket</label>
+                            <select id="uuid_paket" name="uuid_paket" class="form-select basic-usage">
+                                <option value="">-- Pilih nama paket --</option>
+                                @foreach ($paket as $p)
+                                    <option value="{{ $p->uuid }}">{{ $p->nama_paket }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Jenis Pembayaran</label>
+                            <select id="jenis_pembayaran" name="jenis_pembayaran" class="form-select basic-usage">
+                                <option value="">-- Pilih --</option>
+                                <option value="Tunai">Tunai</option>
+                                <option value="QRIS">QRIS</option>
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <div class="modal fade" id="modal-edit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
         aria-labelledby="modal-editLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -179,6 +246,12 @@
                             aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">tanggal mulai</label>
+                            <input type="text" name="tanggal_mulai" id="tanggal_mulai"
+                                class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
                         <div class="mb-2">
                             <label class="text-capitalize form-label">tanggal expired</label>
                             <input type="text" name="tanggal_expired" id="tanggal_expired"
@@ -450,6 +523,7 @@
                 url: '/admin/get-tanggal-expired/' + uuid,
                 type: 'GET',
                 success: function(res) {
+                    $('#tanggal_mulai').val(res.data.mulai);
                     $('#tanggal_expired').val(res.data.expired_at);
                     $('#modal-edit').modal('show');
                 }
@@ -479,53 +553,48 @@
             });
         });
 
-        $('#dataTables').on('click', '.perpanjang-member', function(e) {
-            e.preventDefault(); // hindari reload default
-
+        // Klik tombol edit
+        $('#dataTables').on('click', '.perpanjang-member', function() {
             let uuid = $(this).data('uuid');
 
-            Swal.fire({
-                title: 'Perpanjang Member?',
-                text: 'Apakah kamu yakin ingin memperpanjang masa aktif member ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Perpanjang',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/admin/perpanjang-member/' + uuid,
-                        type: 'GET',
-                        success: function(res) {
-                            if (res.status === 'success') {
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: res.message + ' Tanggal expired baru: ' + res
-                                        .data.expired_at,
-                                    icon: 'success',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
+            $('#uuid-edit-perpanjangan').val(uuid);
 
-                                // Optional: reload tabel setelah perpanjangan
-                                $('#dataTables').DataTable().ajax.reload(null, false);
-                            } else {
-                                Swal.fire({
-                                    title: 'Gagal',
-                                    text: res.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            Swal.fire({
-                                title: 'Terjadi Kesalahan',
-                                text: xhr.responseJSON?.message ||
-                                    'Gagal memperpanjang member.',
-                                icon: 'error'
-                            });
-                        }
+            // $.ajax({
+            //     url: '/admin/get-perpanjang-data/' + uuid,
+            //     type: 'GET',
+            //     success: function(res) {
+            //         console.log(res);
+
+            //         $('#tanggal_mulai').val(res.data.mulai);
+            //         $('#tanggal_expired').val(res.data.expired_at);
+            //         $('#uuid_paket').val(res.data.uuid_paket).trigger('change');
+            //         $('#jenis_pembayaran').val(res.data.jenis_pembayaran).trigger('change');
+
+            $('#modal-edit-perpanjang').modal('show');
+            //     }
+            // });
+        });
+
+        $('#form-edit-perpanjang').on('submit', function(e) {
+            e.preventDefault(); // hindari reload default
+
+            let uuid = $('#uuid-edit-perpanjangan').val();
+
+            $.ajax({
+                url: '/admin/perpanjang-member/' + uuid,
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
                     });
+
+                    $('#modal-edit-perpanjang').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
                 }
             });
         });
@@ -612,7 +681,12 @@
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.transaksi-get') }}",
+                ajax: {
+                    url: "{{ route('admin.transaksi-get') }}",
+                    data: function(d) {
+                        d.filter_expired = $('#filter-expired').val(); // ⬅ kirim filter
+                    }
+                },
                 columns: [{
                         data: null,
                         class: 'mb-kolom-nomor align-content-center',
@@ -767,6 +841,11 @@
         };
 
         $(function() {
+            // ketika dropdown berubah → reload tabel
+            $('#filter-expired').on('change', function() {
+                $('#dataTables').DataTable().ajax.reload();
+            });
+
             initDatatable();
         });
     </script>

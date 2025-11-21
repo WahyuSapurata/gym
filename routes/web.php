@@ -28,6 +28,8 @@ Route::group([
 ], function () {
     Route::get('/dashboard-admin', [App\Http\Controllers\Dashboard::class, 'dashboard_admin'])->name('dashboard-admin');
 
+    Route::get('/chart-tipe-member', [App\Http\Controllers\Dashboard::class, 'chartTipeMember'])->name('chart-tipe-member');
+
     Route::get('/data-member', [App\Http\Controllers\MemberController::class, 'index'])->name('data-member');
     Route::get('/data-member-get', [App\Http\Controllers\MemberController::class, 'get'])->name('data-member-get');
     Route::post('/data-member-store', [App\Http\Controllers\MemberController::class, 'store'])->name('data-member-store');
@@ -71,7 +73,8 @@ Route::group([
 
     Route::post('/edit-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'editTanggalExpired'])->name('edit-tanggal-expired');
 
-    Route::get('/perpanjang-member/{params}', [App\Http\Controllers\TransaksiController::class, 'perpanjangMember'])->name('perpanjang-member');
+    Route::get('/get-perpanjang-data/{params}', [App\Http\Controllers\TransaksiController::class, 'getDataPerpanjang'])->name('get-perpanjang-data');
+    Route::post('/perpanjang-member/{params}', [App\Http\Controllers\TransaksiController::class, 'perpanjangMember'])->name('perpanjang-member');
 
     Route::get('/cetak-invoice/{params}', [App\Http\Controllers\TransaksiController::class, 'invoiceView'])->name('cetak-invoice');
     Route::get('/cetak-kartu/{params}', [App\Http\Controllers\TransaksiController::class, 'cetak_kartu'])->name('cetak-kartu');

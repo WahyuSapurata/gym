@@ -206,10 +206,28 @@
             $('#export-excel').on('click', function(e) {
                 e.preventDefault();
 
-                $('#reportrange').val();
-                let tanggal = $('#reportrange').val().split(' - ');
+                let range = $('#reportrange').val();
 
-                let url = '/superadmin/accounting/export-excel' + (outlet ? '/' + outlet : '');
+                if (!range || !range.includes(' - ')) {
+                    Swal.fire({
+                        title: "Warning",
+                        text: "Silakan pilih rentang tanggal terlebih dahulu.",
+                        icon: "warning",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    return;
+                }
+
+                let tanggal = range.split(' - ');
+                let tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('DD-MM-YYYY');
+                let tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('DD-MM-YYYY');
+
+                // Buat URL dengan parameter GET
+                let url = '/admin/laporan-export?tanggal_awal=' + tanggal_awal + '&tanggal_akhir=' +
+                    tanggal_akhir;
+
+                // Buka untuk download Excel
                 window.open(url, '_blank');
             });
 
