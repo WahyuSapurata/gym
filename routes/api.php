@@ -48,7 +48,7 @@ Route::middleware('cors')->group(function () {
         Route::middleware('role:member')->group(function () {
             Route::get('/api-get-member/{uuid}', [MemberController::class, 'getMemberDetail']);
 
-            Route::get('/api-getTransaksiMember/{uuid}', [TransaksiController::class, 'getTransaksiByMemberUuid']);
+            Route::get('/api-getTransaksiMember', [TransaksiController::class, 'getTransaksiByMemberUuid']);
         });
 
         Route::get('/api-logout', [Auth::class, 'revoke']);
