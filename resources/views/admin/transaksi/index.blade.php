@@ -248,13 +248,13 @@
                     <div class="modal-body">
                         <div class="mb-2">
                             <label class="text-capitalize form-label">tanggal mulai</label>
-                            <input type="text" name="tanggal_mulai" id="tanggal_mulai"
+                            <input type="text" name="tanggal_mulai" id="tanggal_mulai_expired"
                                 class="form-control dateofBirth">
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-2">
                             <label class="text-capitalize form-label">tanggal expired</label>
-                            <input type="text" name="tanggal_expired" id="tanggal_expired"
+                            <input type="text" name="tanggal_expired" id="tanggal_expired_expired"
                                 class="form-control dateofBirth">
                             <div class="invalid-feedback"></div>
                         </div>
@@ -523,8 +523,8 @@
                 url: '/admin/get-tanggal-expired/' + uuid,
                 type: 'GET',
                 success: function(res) {
-                    $('#tanggal_mulai').val(res.data.mulai);
-                    $('#tanggal_expired').val(res.data.expired_at);
+                    $('#tanggal_mulai_expired').val(res.data.mulai);
+                    $('#tanggal_expired_expired').val(res.data.expired_at);
                     $('#modal-edit').modal('show');
                 }
             });
