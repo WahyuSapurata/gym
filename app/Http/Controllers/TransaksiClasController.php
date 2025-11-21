@@ -20,7 +20,7 @@ class TransaksiClasController extends BaseController
             // Simpan di storage/app/public/bukti_pembayaran
             $path = $request->bukti_pembayaran->storeAs('bukti_pembayaran', $fileName, 'public');
         }
-        TransaksiClas::create([
+        $transaksi = TransaksiClas::create([
             'uuid_clas' => $params,
             'nama' => $request->nama,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -32,7 +32,13 @@ class TransaksiClasController extends BaseController
             'status' => 'paid',
         ]);
 
-        return response()->json(['status' => 'success']);
+        $clas = TransaksiClas::where('uuid', $transaksi->uuid)->first();
+        $data = [
+            'transaksi' => $transaksi,
+            'clas' => $clas,
+        ];
+
+        return response()->json(['status' => 'success', 'data' => $data]);
     }
 
     public function konfirmasi($params)
