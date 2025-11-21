@@ -635,8 +635,8 @@ class TransaksiController extends BaseController
 
     public function getTransaksiByMemberUuid($params)
     {
-        $user = User::where('uuid', $params)->first();
-        $member = Member::where('uuid_user', $user->uuid)->first();
+        $member = Member::where('uuid_user', $params)->first();
+        dd($member);
         if (!$member || $member->uuid) {
             return response()->json([
                 'status' => 'error',
