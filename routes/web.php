@@ -105,6 +105,7 @@ Route::group([
 
     Route::get('/laoran', [App\Http\Controllers\Laporan::class, 'index'])->name('laporan');
     Route::get('/laporan-get', [App\Http\Controllers\Laporan::class, 'get'])->name('laporan-get');
+    Route::get('/laporan-export', [App\Http\Controllers\Laporan::class, 'export_excel'])->name('laporan-export');
 
     Route::get('/absen', [App\Http\Controllers\AbsensiController::class, 'index'])->name('absen');
     Route::get('/absen-get', [App\Http\Controllers\AbsensiController::class, 'get'])->name('absen-get');

@@ -34,4 +34,9 @@ class TransaksiClas extends Model
             $model->uuid = Uuid::uuid4()->toString();
         });
     }
+
+    public function clas()
+    {
+        return $this->belongsTo(Clas::class, 'uuid_clas', 'uuid');
+    }
 }

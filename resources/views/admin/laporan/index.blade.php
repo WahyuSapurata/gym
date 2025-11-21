@@ -61,6 +61,13 @@
                             </div>
                         </div>
                         <div class="card-body custom-card-action p-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="m-3">
+                                    <input type="text" class="form-control" id="reportrange">
+                                </div>
+                                <button class="btn btn-success m-3" id="export-excel"><i
+                                        class="fa-solid fa-file-excel me-2"></i> Export</button>
+                            </div>
                             <div class="table-responsive">
                                 <table style="width: 100%" id="dataTables" class="table table-hover mb-0">
                                     <thead>
@@ -147,6 +154,14 @@
                             $('#totalSaldo').html(`<b>Rp 0</b>`);
                         }
                         return json.data;
+                    },
+                    data: function(d) {
+                        let tanggal = $('#reportrange').val().split(' - ');
+
+                        if (tanggal.length === 2) {
+                            d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('DD-MM-YYYY');
+                            d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('DD-MM-YYYY');
+                        }
                     }
                 },
                 columns: [{
@@ -183,6 +198,21 @@
         };
 
         $(function() {
+            $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+                $('#dataTables').DataTable().ajax.reload();
+            });
+
+            // Event tombol export (ambil nilai filter saat diklik)
+            $('#export-excel').on('click', function(e) {
+                e.preventDefault();
+
+                $('#reportrange').val();
+                let tanggal = $('#reportrange').val().split(' - ');
+
+                let url = '/superadmin/accounting/export-excel' + (outlet ? '/' + outlet : '');
+                window.open(url, '_blank');
+            });
+
             initDatatable();
         });
     </script>

@@ -643,7 +643,6 @@ class TransaksiController extends BaseController
             ], 403);
         }
         $transaksi = Transaksi::where('uuid_member', $member->uuid)
-            ->where('is_active', true)
             ->with(['paket'])
             ->get();
         return response()->json([
