@@ -88,7 +88,6 @@ class AbsensiController extends BaseController
     public function getAbsensiApi()
     {
         $absensis = Absensi::with(['member.user'])
-            ->groupBy('tanggal_absen')
             ->orderBy('tanggal_absen', 'desc')
             ->get();
 
