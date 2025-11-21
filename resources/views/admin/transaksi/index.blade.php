@@ -136,7 +136,7 @@
                                 class="form-select basic-usage">
                                 <option value=""></option>
                                 <option value="Tunai">Tunai</option>
-                                <option value="Transfer">Transfer</option>
+                                <option value="QRIS">QRIS</option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>

@@ -9,6 +9,7 @@ use App\Models\Paket;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -628,6 +629,26 @@ class TransaksiController extends BaseController
                 'tanggal_mulai' => $transaksi->tanggal_mulai,
                 'tanggal_selesai' => $transaksi->tanggal_selesai,
             ]
+        ]);
+    }
+
+    public function getTransaksiByMemberUuid($params)
+    {
+        $user = Auth::user();
+        $member = Member::where('uuid_user', $user->uuid)->first();
+        if (!$member || $member->uuid !== $params) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akses ditolak.'
+            ], 403);
+        }
+        $transaksi = Transaksi::where('uuid_member', $member->uuid)
+            ->where('is_active', true)
+            ->with(['paket'])
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaksi
         ]);
     }
 }
