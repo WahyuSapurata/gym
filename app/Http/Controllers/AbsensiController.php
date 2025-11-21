@@ -88,9 +88,8 @@ class AbsensiController extends BaseController
     public function getAbsensiApi()
     {
         $absensis = Absensi::with(['member.user'])
-            ->selectRaw('DATE(created_at) as tanggal, COUNT(*) as total')
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'desc')
+            ->groupBy('tanggal_absen')
+            ->orderBy('tanggal_absen', 'desc')
             ->get();
 
         return response()->json($absensis);
