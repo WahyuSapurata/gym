@@ -71,17 +71,24 @@
                         </a>
                     </li>
 
-                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'produk' ? 'active' : '' }}">
+                    {{-- <li class="nxl-item nxl-hasmenu {{ $path[1] === 'produk' ? 'active' : '' }}">
                         <a href="{{ route('admin.produk') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-layout"></i></span>
                             <span class="nxl-mtext">Produk</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="nxl-item nxl-hasmenu {{ $path[1] === 'oprasional' ? 'active' : '' }}">
                         <a href="{{ route('admin.oprasional') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-truck"></i></span>
                             <span class="nxl-mtext">Operasional</span>
+                        </a>
+                    </li>
+
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'absen' ? 'active' : '' }}">
+                        <a href="{{ route('admin.absen') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-clock"></i></span>
+                            <span class="nxl-mtext">Absensi</span>
                         </a>
                     </li>
 
