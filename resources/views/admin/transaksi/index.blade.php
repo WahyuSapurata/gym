@@ -74,8 +74,8 @@
                                     <label for="" class="form-label">Filter Data</label>
                                     <select id="filter-expired" class="form-select" style="width:200px;">
                                         <option value="">Semua</option>
-                                        <option value="7">Expired ≤ 7 Hari</option>
-                                        <option value="2">Expired ≤ 2 Hari</option>
+                                        <option value="7">Expired 7 Hari</option>
+                                        <option value="2">Expired 2 Hari</option>
                                         <option value="0">Expired</option>
                                     </select>
                                 </div>
@@ -146,6 +146,7 @@
                                 <option value=""></option>
                                 <option value="Tunai">Tunai</option>
                                 <option value="QRIS">QRIS</option>
+                                <option value="Debit">Debit</option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
@@ -220,6 +221,7 @@
                                 <option value="">-- Pilih --</option>
                                 <option value="Tunai">Tunai</option>
                                 <option value="QRIS">QRIS</option>
+                                <option value="Debit">Debit</option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>

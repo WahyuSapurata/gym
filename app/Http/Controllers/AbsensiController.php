@@ -27,7 +27,6 @@ class AbsensiController extends BaseController
             'users.nama',
         ];
 
-        // Total records tanpa filter
         $totalData = Absensi::count();
 
         $query = Absensi::select(
@@ -41,7 +40,20 @@ class AbsensiController extends BaseController
             ->leftJoin('members', 'members.uuid', '=', 'absensis.uuid_member')
             ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user');
 
-        // Searching
+        // ========= FILTER TANGGAL (YYYY-MM-DD) ==========
+        if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
+            $query->whereBetween('absensis.tanggal_absen', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        // ========= FILTER JAM ==========
+        if ($request->filled('jam_absen')) {
+            $query->where('absensis.jam_absen', $request->jam_absen);
+        }
+
+        // ========= SEARCH ==========
         if (!empty($request->search['value'])) {
             $search = $request->search['value'];
             $query->where(function ($q) use ($search, $columns) {
@@ -51,16 +63,13 @@ class AbsensiController extends BaseController
             });
         }
 
-        // Setelah filter
+        // Hitung total setelah filter
         $totalFiltered = $query->count();
 
-        // Sorting
-        $query->latest('absensis.created_at'); // default
-
-        // Pagination
+        // ========= SORTING & PAGINATION ==========
+        $query->orderBy('absensis.created_at', 'desc');
         $query->skip($request->start)->take($request->length);
 
-        // Ambil data
         $data = $query->get();
 
         return response()->json([

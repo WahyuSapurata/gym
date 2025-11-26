@@ -83,16 +83,23 @@ class TransaksiController extends BaseController
 
         // ========== FILTER EXPIRED =============
         if ($request->filter_expired !== null && $request->filter_expired !== "") {
-            $today = Carbon::today();
+
+            $today = Carbon::today()->format('Y-m-d');
 
             if ($request->filter_expired == "0") {
-                // Sudah expired
-                $query->whereDate('members.expired_at', '<', $today);
+                // Benar-benar expired
+                $query->whereRaw(
+                    "DATEDIFF(STR_TO_DATE(members.expired_at, '%d-%m-%Y'), ?) < 0",
+                    [$today]
+                );
             } else {
                 $days = intval($request->filter_expired);
 
-                $query->whereDate('members.expired_at', '>=', $today)
-                    ->whereDate('members.expired_at', '<=', $today->copy()->addDays($days));
+                // Tepat X hari sebelum expired
+                $query->whereRaw(
+                    "DATEDIFF(STR_TO_DATE(members.expired_at, '%d-%m-%Y'), ?) = ?",
+                    [$today, $days]
+                );
             }
         }
 
@@ -387,7 +394,7 @@ class TransaksiController extends BaseController
 
         $data = [
             'invoice_no'     => $transaksi->no_invoice,
-            'tanggal'        => \Carbon\Carbon::parse($transaksi->tanggal_mulai)->translatedFormat('d F Y'),
+            'tanggal'        => \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y'),
             'nama_member'    => $transaksi->member->user->nama,
             'no_member'      => $transaksi->member->member_id,
             'telepon'        => $transaksi->member->nomor_telepon,
@@ -396,7 +403,7 @@ class TransaksiController extends BaseController
             'periode_selesai' => \Carbon\Carbon::parse($transaksi->tanggal_selesai)->translatedFormat('d F Y'),
             'total'          => number_format($transaksi->total_bayar, 0, ',', '.'),
             'metode'         => strtoupper($transaksi->jenis_pembayaran),
-            'tanggal_bayar'  => \Carbon\Carbon::parse($transaksi->tanggal_mulai)->translatedFormat('d F Y'),
+            'tanggal_bayar'  => \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y'),
         ];
 
         return view('admin.transaksi.invoiceview', $data);

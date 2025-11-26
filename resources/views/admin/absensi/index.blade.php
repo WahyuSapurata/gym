@@ -61,6 +61,14 @@
                             </div>
                         </div>
                         <div class="card-body custom-card-action p-0">
+                            <div class="d-flex align-items-center">
+                                <div class="m-3">
+                                    <input type="text" class="form-control" id="reportrange">
+                                </div>
+                                <div class="m-3">
+                                    <input type="time" class="form-control" id="rportJam">
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table style="width: 100%" id="dataTables" class="table table-hover mb-0">
                                     <thead>
@@ -83,7 +91,7 @@
 @push('scripts')
     <script>
         const initDatatable = () => {
-            // Destroy existing DataTable if it exists
+
             if ($.fn.DataTable.isDataTable('#dataTables')) {
                 $('#dataTables').DataTable().clear().destroy();
             }
@@ -93,31 +101,51 @@
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.absen-get') }}",
+                ajax: {
+                    url: "{{ route('admin.absen-get') }}",
+                    data: function(d) {
+
+                        // ====== FILTER TANGGAL ======
+                        let tanggal = $('#reportrange').val().split(' - ');
+
+                        if (tanggal.length === 2) {
+                            d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('YYYY-MM-DD');
+                            d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('YYYY-MM-DD');
+                        }
+
+                        // ====== FILTER JAM ======
+                        d.jam_absen = $('#rportJam').val();
+                    }
+                },
                 columns: [{
                         data: null,
-                        class: 'mb-kolom-nomor align-content-center',
                         render: function(data, type, row, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
                     {
-                        data: 'nama',
-                        class: 'mb-kolom-text text-left align-content-center'
+                        data: 'nama'
                     },
                     {
-                        data: 'tanggal_absen',
-                        class: 'mb-kolom-text text-left align-content-center'
+                        data: 'tanggal_absen'
                     },
                     {
-                        data: 'jam_absen',
-                        class: 'mb-kolom-text text-left align-content-center',
+                        data: 'jam_absen'
                     },
                 ],
             });
         };
 
         $(function() {
+
+            $('#reportrange').on('apply.daterangepicker', function() {
+                $('#dataTables').DataTable().ajax.reload();
+            });
+
+            $('#rportJam').on('change', function() {
+                $('#dataTables').DataTable().ajax.reload();
+            });
+
             initDatatable();
         });
     </script>
