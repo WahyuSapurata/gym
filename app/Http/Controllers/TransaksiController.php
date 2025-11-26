@@ -305,57 +305,62 @@ class TransaksiController extends BaseController
 
         try {
             $transaksi = Transaksi::where('uuid', $params)
-                ->with('member', 'paket') // pastikan relasi ikut di-load
+                ->with(['member', 'paket'])
                 ->firstOrFail();
 
-            // Update status transaksi
-            $transaksi->status = 'terkonfirmasi';
-            $transaksi->keterangan = 'Pembayaran telah dikonfirmasi oleh admin.';
-            $transaksi->save();
-
             $member = $transaksi->member;
-            $paket = $transaksi->paket;
+            $paket  = $transaksi->paket;
+
+            // Update status transaksi
+            $transaksi->update([
+                'status'     => 'terkonfirmasi',
+                'keterangan' => 'Pembayaran telah dikonfirmasi oleh admin.'
+            ]);
 
             if ($member && $paket) {
-                // Tentukan prefix dari tipe_member
+
+                // Tentukan prefix tipe member
                 $prefix = match (strtolower($paket->tipe_member)) {
-                    'gym' => 'G',
-                    'fungsional' => 'F',
-                    'studio' => 'S',
-                    default => 'M', // fallback jika tipe tidak dikenal
+                    'gym'        => 'G-',
+                    'fungsional' => 'F-',
+                    'studio'     => 'S-',
+                    default      => 'M-',
                 };
 
-                // Jika member belum punya member_id, buatkan otomatis
+                // ===========================
+                //  JIKA MEMBER_ID BELUM ADA
+                // ===========================
                 if (empty($member->member_id)) {
-                    // Ambil member_id terakhir dengan prefix yang sama
+
+                    // Ambil ID terakhir dengan prefix sama
                     $lastId = Member::whereNotNull('member_id')
                         ->where('member_id', 'like', $prefix . '%')
                         ->orderBy('member_id', 'desc')
                         ->value('member_id');
 
-                    // Ambil angka terakhir (contoh dari "G0010" jadi 10)
                     $nextNumber = $lastId
                         ? ((int) preg_replace('/\D/', '', $lastId)) + 1
                         : 1;
 
-                    // Format ID baru, contoh: G0001 / F0012 / S0023
                     $newMemberId = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-                    // Simpan ke member
                     $member->member_id = $newMemberId;
-                    $member->status_member = 'aktif';
-                    $member->save();
                 }
+
+                // Jika member_id SUDAH ADA → tetap aktifkan status
+                $member->status_member = 'aktif';
+                $member->save();
             }
 
             DB::commit();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Transaksi berhasil dikonfirmasi dan member ID telah diperbarui.'
+                'message' => 'Transaksi berhasil dikonfirmasi dan status member diperbarui.'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
