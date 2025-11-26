@@ -109,8 +109,8 @@
                         let tanggal = $('#reportrange').val().split(' - ');
 
                         if (tanggal.length === 2) {
-                            d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('YYYY-MM-DD');
-                            d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('YYYY-MM-DD');
+                            d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('DD-MM-YYYY');
+                            d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('DD-MM-YYYY');
                         }
 
                         // ====== FILTER JAM ======
