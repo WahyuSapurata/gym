@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
 use App\Models\Member;
+use App\Models\ReferalPoint;
 use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,20 +41,31 @@ class MemberController extends BaseController
             'users.nama',
             'users.username',
             'users.password_hash',
+            'point', // dipetakan dari COALESCE(...)
         ];
 
         $totalData = Member::count();
 
-        $query = Member::select($columns)
-            ->join('users', 'users.uuid', '=', 'members.uuid_user');
+        $query = Member::select([
+            'members.*',
+            'users.nama',
+            'users.username',
+            'users.password_hash',
+            DB::raw('COALESCE(referal_points.point, 0) as point')
+        ])
+            ->join('users', 'users.uuid', '=', 'members.uuid_user')
+            ->leftJoin('referal_points', 'referal_points.uuid_member', '=', 'members.uuid'); // ← perbaikan penting
 
         // Searching
         if (!empty($request->search['value'])) {
             $search = $request->search['value'];
-            $query->where(function ($q) use ($search, $columns) {
-                foreach ($columns as $column) {
-                    $q->orWhere($column, 'like', "%{$search}%");
-                }
+
+            $query->where(function ($q) use ($search) {
+                $q->orWhere('members.member_id', 'like', "%{$search}%")
+                    ->orWhere('members.nomor_telepon', 'like', "%{$search}%")
+                    ->orWhere('members.alamat', 'like', "%{$search}%")
+                    ->orWhere('users.nama', 'like', "%{$search}%")
+                    ->orWhere('users.username', 'like', "%{$search}%");
             });
         }
 
@@ -60,27 +73,24 @@ class MemberController extends BaseController
 
         // Sorting
         if ($request->order) {
-            $orderCol = $columns[$request->order[0]['column']];
+            $orderColIndex = $request->order[0]['column'];
             $orderDir = $request->order[0]['dir'];
+            $orderCol = $columns[$orderColIndex] ?? 'members.created_at';
             $query->orderBy($orderCol, $orderDir);
         } else {
-            $query->latest();
+            $query->latest('members.created_at');
         }
 
         // Pagination
         $query->skip($request->start)->take($request->length);
 
         $data = $query->get()->map(function ($item) {
-            // Hitung umur dari tanggal_lahir
-            if (!empty($item->tanggal_lahir)) {
-                $item->umur = \Carbon\Carbon::parse($item->tanggal_lahir)->age;
-            } else {
-                $item->umur = null;
-            }
+            $item->umur = !empty($item->tanggal_lahir)
+                ? \Carbon\Carbon::parse($item->tanggal_lahir)->age
+                : null;
             return $item;
         });
 
-        // Format response DataTables
         return response()->json([
             'draw' => intval($request->draw),
             'recordsTotal' => $totalData,
@@ -273,5 +283,27 @@ class MemberController extends BaseController
                 'paket' => $transaksi->paket ? $transaksi->paket->nama_paket : null,
             ]
         ]);
+    }
+
+    public function getReferal($params)
+    {
+        $referal = ReferalPoint::where('uuid_member', $params)->first();
+        $point = $referal ? $referal->point : 0;
+
+        return $this->sendResponse($point, 'Get referral success');
+    }
+
+    public function updateReferal(Request $request, $params)
+    {
+        $validated = $request->validate([
+            'point' => 'required|numeric',
+        ]);
+
+        $referal = ReferalPoint::updateOrCreate(
+            ['uuid_member' => $params], // cari berdasarkan ini
+            ['point' => $validated['point']] // update / insert
+        );
+
+        return $this->sendResponse($referal, 'Referral point updated');
     }
 }

@@ -78,6 +78,7 @@
                                             <th class="text-capitalize">tanggal registrasi</th>
                                             <th class="text-capitalize">nomor telepon</th>
                                             <th class="text-capitalize">foto</th>
+                                            <th class="text-capitalize">point</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
                                     </thead>
@@ -222,6 +223,32 @@
                         <div class="mb-2">
                             <label class="text-capitalize form-label">member id</label>
                             <input type="text" name="member_id" id="member_id" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-referal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-labelledby="modal-referalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-referal" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-referal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Referal Point</h5>
+                        <button type="button" class="btn-close" id="btn-close-referal" data-bs-dismiss="modal-referal"
+                            aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">Point</label>
+                            <input type="text" name="point" id="point" class="form-control">
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
@@ -486,6 +513,47 @@
             $('#modal-edit').modal('hide');
         });
 
+        $('#dataTables').on('click', '.editReferal', function() {
+            let uuid = $(this).data('uuid');
+            $('#uuid-referal').val(uuid);
+
+            $.ajax({
+                url: '/admin/get-referal/' + uuid,
+                type: 'GET',
+                success: function(res) {
+                    $('#point').val(res.data);
+                    $('#modal-referal').modal('show');
+                }
+            });
+        });
+
+        $('#form-referal').on('submit', function(e) {
+            e.preventDefault();
+            let uuid = $('#uuid-referal').val();
+
+            $.ajax({
+                url: '/admin/update-referal/' + uuid,
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modal-referal').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-close-referal', function() {
+            $('#modal-referal').modal('hide');
+        });
+
         const initDatatable = () => {
             // Destroy existing DataTable if it exists
             if ($.fn.DataTable.isDataTable('#dataTables')) {
@@ -585,6 +653,10 @@
                         },
                     },
                     {
+                        data: 'point',
+                        class: 'mb-kolom-tanggal text-left align-content-center'
+                    },
+                    {
                         data: 'uuid', // akan diganti di columnDefs
                         orderable: false,
                         searchable: false
@@ -620,6 +692,9 @@
                                     </a>
                                     <a href="#" data-uuid="${data}" class="btn btn-outline-secondary editMemberId btn-sm">
                                         Edit Member ID
+                                    </a>
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-success editReferal btn-sm">
+                                        Referal
                                     </a>
                                 </div>
                     `;
