@@ -65,8 +65,13 @@
                                 <div class="m-3">
                                     <input type="text" class="form-control" id="reportrange">
                                 </div>
+                                <div class="m-3 d-flex align-items-center gap-3">
+                                    <input type="time" class="form-control" id="rportJamStart">
+                                    -
+                                    <input type="time" class="form-control" id="rportJamEnd">
+                                </div>
                                 <div class="m-3">
-                                    <input type="time" class="form-control" id="rportJam">
+                                    <div id="jumlah-member-hadir" class="btn btn-info fw-bold">0 Member</div>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -107,14 +112,20 @@
 
                         // ====== FILTER TANGGAL ======
                         let tanggal = $('#reportrange').val().split(' - ');
-
                         if (tanggal.length === 2) {
                             d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('DD-MM-YYYY');
                             d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('DD-MM-YYYY');
                         }
 
-                        // ====== FILTER JAM ======
-                        d.jam_absen = $('#rportJam').val();
+                        // ====== FILTER JAM RANGE ======
+                        d.jam_absen_start = $('#rportJamStart').val();
+                        d.jam_absen_end = $('#rportJamEnd').val();
+                    },
+                    dataSrc: function(json) {
+                        // Update jumlah member hadir
+                        $('#jumlah-member-hadir').text(json.recordsFiltered +
+                            " Member");
+                        return json.data;
                     }
                 },
                 columns: [{
@@ -142,7 +153,7 @@
                 $('#dataTables').DataTable().ajax.reload();
             });
 
-            $('#rportJam').on('change', function() {
+            $('#rportJamStart').add('#rportJamEnd').on('change', function() {
                 $('#dataTables').DataTable().ajax.reload();
             });
 

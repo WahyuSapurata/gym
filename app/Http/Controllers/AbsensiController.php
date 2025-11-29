@@ -27,31 +27,37 @@ class AbsensiController extends BaseController
             'users.nama',
         ];
 
-        $totalData = Absensi::count();
+        $baseQuery = Absensi::leftJoin('members', 'members.uuid', '=', 'absensis.uuid_member')
+            ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user');
 
-        $query = Absensi::select(
+        // ========= FILTER TANGGAL ==========
+        if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
+            $baseQuery->whereBetween('absensis.tanggal_absen', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        // ========= FILTER JAM RANGE ==========
+        if ($request->filled('jam_absen_start') && $request->filled('jam_absen_end')) {
+            $baseQuery->whereBetween('absensis.jam_absen', [
+                $request->jam_absen_start,
+                $request->jam_absen_end
+            ]);
+        }
+
+        // === Hitung member hadir (unique member) ===
+        $jumlah_member_hadir = (clone $baseQuery)->distinct('absensis.uuid_member')->count('absensis.uuid_member');
+
+        // Query utama untuk datatable
+        $query = (clone $baseQuery)->select(
             'absensis.uuid',
             'absensis.uuid_member',
             'absensis.tanggal_absen',
             'absensis.jam_absen',
             'members.uuid as uuid_user',
             'users.nama as nama'
-        )
-            ->leftJoin('members', 'members.uuid', '=', 'absensis.uuid_member')
-            ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user');
-
-        // ========= FILTER TANGGAL (YYYY-MM-DD) ==========
-        if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
-            $query->whereBetween('absensis.tanggal_absen', [
-                $request->tanggal_awal,
-                $request->tanggal_akhir
-            ]);
-        }
-
-        // ========= FILTER JAM ==========
-        if ($request->filled('jam_absen')) {
-            $query->where('absensis.jam_absen', $request->jam_absen);
-        }
+        );
 
         // ========= SEARCH ==========
         if (!empty($request->search['value'])) {
@@ -66,16 +72,18 @@ class AbsensiController extends BaseController
         // Hitung total setelah filter
         $totalFiltered = $query->count();
 
-        // ========= SORTING & PAGINATION ==========
-        $query->orderBy('absensis.created_at', 'desc');
-        $query->skip($request->start)->take($request->length);
+        // SORT & PAGINATION
+        $query->orderBy('absensis.created_at', 'desc')
+            ->skip($request->start)
+            ->take($request->length);
 
         $data = $query->get();
 
         return response()->json([
             'draw' => intval($request->draw),
-            'recordsTotal' => $totalData,
+            'recordsTotal' => Absensi::count(),
             'recordsFiltered' => $totalFiltered,
+            'jumlah_member_hadir' => $jumlah_member_hadir,
             'data' => $data
         ]);
     }
@@ -94,12 +102,33 @@ class AbsensiController extends BaseController
         return response()->json(['message' => 'Absensi berhasil ditambahkan.']);
     }
 
-    public function getAbsensiApi()
+    public function getAbsensiApi(Request $request)
     {
-        $absensis = Absensi::with(['member.user'])
-            ->orderBy('tanggal_absen', 'desc')
-            ->get();
+        $query = Absensi::with(['member.user'])
+            ->orderBy('tanggal_absen', 'desc');
 
-        return response()->json($absensis);
+        // ========= FILTER TANGGAL (YYYY-MM-DD) ==========
+        if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
+            $query->whereBetween('tanggal_absen', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        // ========= FILTER JAM RANGE ==========
+        if ($request->filled('jam_awal') && $request->filled('jam_akhir')) {
+            $query->whereBetween('jam_absen', [
+                $request->jam_awal,
+                $request->jam_akhir
+            ]);
+        }
+
+        $absensis = $query->get();
+
+        return response()->json([
+            'status' => true,
+            'total' => $absensis->count(),
+            'data' => $absensis
+        ]);
     }
 }
