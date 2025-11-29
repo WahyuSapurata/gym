@@ -107,12 +107,17 @@ class AbsensiController extends BaseController
         $query = Absensi::with(['member.user'])
             ->orderBy('tanggal_absen', 'desc');
 
-        // ========= FILTER TANGGAL (YYYY-MM-DD) ==========
+        // ========= FILTER TANGGAL (DD-MM-YYYY) ==========
         if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
-            $query->whereBetween('tanggal_absen', [
-                $request->tanggal_awal,
-                $request->tanggal_akhir
-            ]);
+
+            // Convert request (Y-m-d) → d-m-Y
+            $tglAwal = \Carbon\Carbon::parse($request->tanggal_awal)->format('d-m-Y');
+            $tglAkhir = \Carbon\Carbon::parse($request->tanggal_akhir)->format('d-m-Y');
+
+            $query->whereRaw(
+                "STR_TO_DATE(tanggal_absen, '%d-%m-%Y') BETWEEN STR_TO_DATE(?, '%d-%m-%Y') AND STR_TO_DATE(?, '%d-%m-%Y')",
+                [$tglAwal, $tglAkhir]
+            );
         }
 
         // ========= FILTER JAM RANGE ==========
