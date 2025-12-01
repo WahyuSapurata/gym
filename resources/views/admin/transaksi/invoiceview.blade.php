@@ -202,7 +202,9 @@
         </table>
 
         <div class="info-section">
-            <p><strong>Metode Pembayaran :</strong> {{ $metode }} (BRI a.n G-Rind Up Fitness 1)</p>
+            <p><strong>Metode Pembayaran :</strong>
+                {{ $metode == 'Tunai' ? $metode . '' : $metode . ' (A.n G-Rind Up Fitness 1)' }}
+            </p>
             <p><strong>Tanggal Bayar :</strong> {{ $tanggal_bayar }}</p>
         </div>
 

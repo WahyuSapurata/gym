@@ -460,11 +460,41 @@
                     },
                     {
                         data: 'jadwal',
-                        class: 'mb-kolom-text text-left align-content-center'
+                        class: 'mb-kolom-text text-left align-content-center',
+                        render: function(data, type, row) {
+
+                            if (!data) return '-';
+
+                            // Pisahkan tanggal dan jam
+                            let [tanggal, jam] = data.split(' ');
+
+                            // Format hari berdasarkan tanggal
+                            let parts = tanggal.split('-'); // d-m-Y
+                            let tglObj = new Date(parts[2], parts[1] - 1, parts[0]);
+
+                            const namaHari = [
+                                "Minggu", "Senin", "Selasa", "Rabu",
+                                "Kamis", "Jumat", "Sabtu"
+                            ];
+
+                            let hari = namaHari[tglObj.getDay()];
+
+                            return `
+                                    <div style="line-height:16px">
+                                        Tanggal ${tanggal}<br>
+                                        <small>Hari ${hari}</small><br>
+                                        <strong>Jam ${jam}</strong>
+                                    </div>
+                                `;
+                        }
                     },
                     {
                         data: 'durasi',
-                        class: 'mb-kolom-text text-left align-content-center'
+                        class: 'mb-kolom-text text-left align-content-center',
+                        render: function(data, type, row) {
+                            // Format jumlah ke Rupiah
+                            return data + " Menit";
+                        }
                     },
                     {
                         data: 'slot',

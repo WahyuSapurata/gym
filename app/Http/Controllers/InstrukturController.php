@@ -23,6 +23,7 @@ class InstrukturController extends BaseController
             'uuid',
             'nama',
             'keahlian',
+            'kategori',
             'pengalaman',
             'foto_instruktur',
         ];
@@ -33,6 +34,7 @@ class InstrukturController extends BaseController
             'uuid',
             'nama',
             'keahlian',
+            'kategori',
             'pengalaman',
             'foto_instruktur',
         );
@@ -124,6 +126,7 @@ class InstrukturController extends BaseController
         $clas->update([
             'nama' => $update->nama,
             'keahlian' => $update->keahlian,
+            'kategori' => $update->kategori,
             'pengalaman' => $update->pengalaman,
             'foto_instruktur' => $path,
         ]);
@@ -147,7 +150,7 @@ class InstrukturController extends BaseController
 
     public function getData()
     {
-        $data = Instruktur::select('uuid', 'nama', 'keahlian', 'pengalaman', 'foto_instruktur')
+        $data = Instruktur::select('uuid', 'nama', 'keahlian', 'kategori', 'pengalaman', 'foto_instruktur')
             ->get()
             ->map(function ($item) {
                 // Kalau keahlian null → kasih array kosong

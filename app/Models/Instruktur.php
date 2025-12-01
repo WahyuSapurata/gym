@@ -16,6 +16,7 @@ class Instruktur extends Model
         'uuid',
         'nama',
         'keahlian',
+        'kategori',
         'pengalaman',
         'foto_instruktur',
     ];

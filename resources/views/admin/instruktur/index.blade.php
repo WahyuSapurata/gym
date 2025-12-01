@@ -66,6 +66,7 @@
                                             <th class="text-capitalize">No</th>
                                             <th class="text-capitalize">nama</th>
                                             <th class="text-capitalize">keahlian</th>
+                                            <th class="text-capitalize">kategori</th>
                                             <th class="text-capitalize">pengalaman</th>
                                             <th class="text-capitalize">foto</th>
                                             <th class="text-end">Actions</th>
@@ -101,6 +102,16 @@
                         <div class="mb-2">
                             <label class="text-capitalize form-label">keahlian</label>
                             <input type="text" name="keahlian" id="keahlian" class="form-control">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">Instruktur</label>
+                            <select id="kategori" name="kategori" data-placeholder="Pilih inputan"
+                                class="form-select basic-usage">
+                                <option value="">-- Pilih Instruktur --</option>
+                                <option value="Instruktur Clas">Instruktur Clas</option>
+                                <option value="Personal Traner">Personal Traner</option>
+                            </select>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="mb-2">
@@ -371,6 +382,10 @@
                             return data.map(item =>
                                 `<span class="badge bg-primary me-1">${item}</span>`).join(' ');
                         }
+                    },
+                    {
+                        data: 'kategori',
+                        class: 'mb-kolom-text text-left align-content-center'
                     },
                     {
                         data: 'pengalaman',
