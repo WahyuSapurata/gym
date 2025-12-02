@@ -27,7 +27,6 @@ class StoreTransaksiClasRequest extends FormRequest
             'alamat' => 'required',
             'nomor_telepon' => 'required',
             'tanggal_lahir' => 'required',
-            'bukti_pembayaran' => 'required',
         ];
     }
 
@@ -39,7 +38,6 @@ class StoreTransaksiClasRequest extends FormRequest
             'alamat.required' => 'Kolom alamat harus di isi.',
             'nomor_telepon.required' => 'Kolom nomor telepon harus di isi.',
             'tanggal_lahir.required' => 'Kolom tanggal lahir harus di isi.',
-            'bukti_pembayaran.required' => 'Kolom bukti pembayaran harus di isi.',
         ];
     }
 }
