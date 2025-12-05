@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use App\Models\Akad;
 use App\Models\Member;
 use App\Models\ReferalPoint;
 use App\Models\Transaksi;
@@ -51,10 +52,12 @@ class MemberController extends BaseController
             'users.nama',
             'users.username',
             'users.password_hash',
-            DB::raw('COALESCE(referal_points.point, 0) as point')
+            DB::raw('COALESCE(referal_points.point, 0) as point'),
+            DB::raw('akads.foto as foto_akad')
         ])
             ->join('users', 'users.uuid', '=', 'members.uuid_user')
-            ->leftJoin('referal_points', 'referal_points.uuid_member', '=', 'members.uuid'); // ← perbaikan penting
+            ->leftJoin('referal_points', 'referal_points.uuid_member', '=', 'members.uuid') // ← perbaikan penting
+            ->leftJoin('akads', 'akads.uuid_member', '=', 'members.uuid'); // ← perbaikan penting
 
         // Searching
         if (!empty($request->search['value'])) {
@@ -305,5 +308,48 @@ class MemberController extends BaseController
         );
 
         return $this->sendResponse($referal, 'Referral point updated');
+    }
+
+    public function getAkad($params)
+    {
+        $akad = Akad::where('uuid_member', $params)->first();
+        $point = $akad ? $akad->foto : 0;
+
+        return $this->sendResponse($point, 'Get referral success');
+    }
+
+    public function updateAkad(Request $request, $params)
+    {
+        // Validasi file hanya jika dikirim
+        $request->validate([
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:10048',
+        ]);
+
+        $akad = Akad::where('uuid_member', $params)->first();
+
+        $path = $akad->foto ?? null; // simpan foto lama jika tidak update
+
+        // Jika ada file baru
+        if ($request->hasFile('foto')) {
+
+            // Hapus file lama jika ada
+            if ($akad && $akad->foto && Storage::disk('public')->exists($akad->foto)) {
+                Storage::disk('public')->delete($akad->foto);
+            }
+
+            // Buat nama unik
+            $fileName = time() . '_' . uniqid() . '.' . $request->foto->extension();
+
+            // Simpan ke storage/app/public/foto
+            $path = $request->foto->storeAs('foto', $fileName, 'public');
+        }
+
+        // update or create
+        $akad = Akad::updateOrCreate(
+            ['uuid_member' => $params],
+            ['foto' => $path]
+        );
+
+        return $this->sendResponse($akad, 'Akad updated');
     }
 }

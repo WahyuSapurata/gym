@@ -78,6 +78,7 @@
                                             <th class="text-capitalize">tanggal registrasi</th>
                                             <th class="text-capitalize">nomor telepon</th>
                                             <th class="text-capitalize">foto</th>
+                                            <th class="text-capitalize">foto akad</th>
                                             <th class="text-capitalize">point</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
@@ -250,6 +251,33 @@
                             <label class="text-capitalize form-label">Point</label>
                             <input type="text" name="point" id="point" class="form-control">
                             <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-akad" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-labelledby="modal-akadLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-akad" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-akad">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Akad</h5>
+                        <button type="button" class="btn-close" id="btn-close-akad" data-bs-dismiss="modal-akad"
+                            aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">Foto</label>
+                            <input id="foto-akad" class="form-control" type="file" name="foto" accept="image/*">
+                            <img src="{{ asset('assets/images/logo-abbr.png') }}"
+                                class="foto-akad img-fluid rounded h-100 w-100 mt-2" alt="">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -550,8 +578,77 @@
             });
         });
 
-        $(document).on('click', '#btn-close-referal', function() {
-            $('#modal-referal').modal('hide');
+        $(document).on('click', '#btn-close-akad', function() {
+            $('#modal-akad').modal('hide');
+        });
+
+        $('#dataTables').on('click', '.editAkad', function() {
+            let uuid = $(this).data('uuid');
+            $('#uuid-akad').val(uuid);
+
+            $.ajax({
+                url: '/admin/get-akad/' + uuid,
+                type: 'GET',
+                success: function(res) {
+
+                    let $img = $('.foto-akad');
+
+                    if (res.data) {
+                        // Path storage lengkap
+                        let fullPath = `/storage/${res.data}`;
+                        $img.attr('src', fullPath);
+                    } else {
+                        // Gambar default
+                        $img.attr('src', '/assets/images/logo-abbr.png');
+                    }
+
+                    $('#modal-akad').modal('show');
+                }
+            });
+        });
+
+        $('#form-akad').on('submit', function(e) {
+            e.preventDefault();
+
+            let uuid = $('#uuid-akad').val();
+            let formDataAkad = new FormData(this);
+
+            $.ajax({
+                url: '/admin/update-akad/' + uuid,
+                type: 'POST',
+                data: formDataAkad,
+                processData: false,
+                contentType: false,
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modal-akad').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
+                },
+
+                error: function(xhr) {
+                    Swal.fire({
+                        title: "Gagal!",
+                        text: xhr.responseJSON?.message ?? 'Terjadi kesalahan',
+                        icon: "error"
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '#btn-close-akad', function() {
+            $('#modal-akad').modal('hide');
         });
 
         const initDatatable = () => {
@@ -653,6 +750,15 @@
                         },
                     },
                     {
+                        data: 'foto_akad',
+                        render: function(data, type, row) {
+                            if (data) {
+                                return `<img src="{{ asset('storage') }}/${data}" class="img-fluid rounded" style="max-width: 50px;">`;
+                            }
+                            return '<span class="text-muted">Tidak ada foto</span>';
+                        },
+                    },
+                    {
                         data: 'point',
                         class: 'mb-kolom-tanggal text-left align-content-center'
                     },
@@ -695,6 +801,9 @@
                                     </a>
                                     <a href="#" data-uuid="${data}" class="btn btn-outline-success editReferal btn-sm">
                                         Referal
+                                    </a>
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-info editAkad btn-sm">
+                                        Edit Akad
                                     </a>
                                 </div>
                     `;

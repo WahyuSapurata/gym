@@ -42,6 +42,9 @@ Route::group([
     Route::get('/get-referal/{params}', [App\Http\Controllers\MemberController::class, 'getReferal'])->name('get-referal');
     Route::post('/update-referal/{params}', [App\Http\Controllers\MemberController::class, 'updateReferal'])->name('update-referal');
 
+    Route::get('/get-akad/{params}', [App\Http\Controllers\MemberController::class, 'getAkad'])->name('get-akad');
+    Route::post('/update-akad/{params}', [App\Http\Controllers\MemberController::class, 'updateAkad'])->name('update-akad');
+
     Route::get('/paket', [App\Http\Controllers\PaketController::class, 'index'])->name('paket');
     Route::get('/paket-get', [App\Http\Controllers\PaketController::class, 'get'])->name('paket-get');
     Route::post('/paket-store', [App\Http\Controllers\PaketController::class, 'store'])->name('paket-store');
