@@ -667,6 +667,8 @@ class TransaksiController extends BaseController
             'data' => [
                 'uuid_member' => $member->uuid,
                 'nama_member' => $member->user->nama,
+                'tanggal_lahir' => $member->user->tanggal_lahir,
+                'alamat' => $member->user->alamat,
                 'member_id' => $member->member_id,
                 'nomor_telepon' => $member->nomor_telepon,
                 'jenis_kelamin' => $member->jenis_kelamin,
