@@ -260,6 +260,8 @@ class MemberController extends BaseController
     public function getMemberDetail($uuid)
     {
         $member = Member::where('uuid', $uuid)->first();
+        $referal = ReferalPoint::where('uuid_member', $uuid)->first();
+        $akad = Akad::where('uuid_member', $uuid)->first();
         if (!$member) {
             return response()->json(['status' => 'error', 'message' => 'Member not found'], 404);
         }
@@ -284,8 +286,8 @@ class MemberController extends BaseController
                 'tanggal_mulai' => $transaksi->tanggal_mulai,
                 'tanggal_selesai' => $transaksi->tanggal_selesai,
                 'paket' => $transaksi->paket ? $transaksi->paket->nama_paket : null,
-                'point' => $member->referal ? $member->referal->point : 0,
-                'foto_akad' => $member->akad ? $member->akad->foto : null,
+                'point' => $referal->point ?? 0,
+                'foto_akad' => $akad->foto ?? null,
             ]
         ]);
     }
