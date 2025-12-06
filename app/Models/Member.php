@@ -48,4 +48,14 @@ class Member extends Model
     {
         return $this->belongsTo(User::class, 'uuid_user', 'uuid');
     }
+
+    public function referal()
+    {
+        return $this->hasMany(ReferalPoint::class, 'uuid_member', 'uuid');
+    }
+
+    public function akad()
+    {
+        return $this->hasMany(Akad::class, 'uuid_member', 'uuid');
+    }
 }
