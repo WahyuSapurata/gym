@@ -284,7 +284,7 @@ class MemberController extends BaseController
                 'tanggal_mulai' => $transaksi->tanggal_mulai,
                 'tanggal_selesai' => $transaksi->tanggal_selesai,
                 'paket' => $transaksi->paket ? $transaksi->paket->nama_paket : null,
-                'point' => $member->referal->point ?? 0,
+                'point' => $member->referal ? $member->referal->point : 0,
                 'foto_akad' => $member->akad ? $member->akad->foto : null,
             ]
         ]);
