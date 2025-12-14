@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAbsensiRequest;
 use App\Models\Absensi;
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AbsensiController extends BaseController
 {
@@ -134,6 +135,47 @@ class AbsensiController extends BaseController
             'status' => true,
             'total' => $absensis->count(),
             'data' => $absensis
+        ]);
+    }
+
+    public function absen_harian()
+    {
+        $module = 'Absensi Harian';
+        return view('admin.absensi.absen_harian', compact('module'));
+    }
+
+    public function getAbsenHarian(Request $request)
+    {
+        $tanggal = $request->tanggal;
+
+        // Ambil jumlah absen per jam
+        $data = Absensi::select(
+            DB::raw("HOUR(jam_absen) as jam"),
+            DB::raw("COUNT(*) as total")
+        )
+            ->whereDate('tanggal_absen', $tanggal)
+            ->whereTime('jam_absen', '>=', '06:00')
+            ->whereTime('jam_absen', '<', '22:00')
+            ->groupBy(DB::raw("HOUR(jam_absen)"))
+            ->orderBy('jam')
+            ->get();
+
+        // Buat range jam 06 - 22 (biar jam kosong tetap tampil)
+        $result = [];
+
+        for ($jam = 6; $jam < 22; $jam++) {
+            $found = $data->firstWhere('jam', $jam);
+
+            $result[] = [
+                'range_jam' => sprintf('%02d:00 - %02d:00', $jam, $jam + 1),
+                'total_absen' => $found ? $found->total : 0
+            ];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'tanggal' => $tanggal,
+            'data' => $result
         ]);
     }
 }

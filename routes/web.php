@@ -118,6 +118,9 @@ Route::group([
 
     Route::get('/absen', [App\Http\Controllers\AbsensiController::class, 'index'])->name('absen');
     Route::get('/absen-get', [App\Http\Controllers\AbsensiController::class, 'get'])->name('absen-get');
+
+    Route::get('/absen-harian', [App\Http\Controllers\AbsensiController::class, 'absen_harian'])->name('absen-harian');
+    Route::get('/absen-harian-data', [App\Http\Controllers\AbsensiController::class, 'getAbsenHarian'])->name('absen-harian-data');
 });
 
 Route::get('/logout', [App\Http\Controllers\Auth::class, 'logout'])->name('logout');

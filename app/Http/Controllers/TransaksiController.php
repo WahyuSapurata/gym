@@ -662,6 +662,29 @@ class TransaksiController extends BaseController
                 'message' => 'Transaksi aktif tidak ditemukan untuk member ini.'
             ], 404);
         }
+
+        // ===============================
+        // VALIDASI TANGGAL ABSENSI
+        // ===============================
+        $today = Carbon::today();
+
+        $tanggalMulai   = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_mulai);
+        $tanggalSelesai = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_selesai);
+
+        if ($today->lt($tanggalMulai)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Absensi belum bisa dilakukan. Belum masuk tanggal mulai.'
+            ], 403);
+        }
+
+        if ($today->gt($tanggalSelesai)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Masa aktif member sudah berakhir.'
+            ], 403);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => [
