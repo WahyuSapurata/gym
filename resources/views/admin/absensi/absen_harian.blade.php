@@ -63,28 +63,11 @@
                         <div class="card-body custom-card-action p-0">
                             <div class="d-flex align-items-center">
                                 <div class="m-3">
-                                    <input type="text" class="form-control" id="reportrange">
-                                </div>
-                                <div class="m-3 d-flex align-items-center gap-3">
-                                    <input type="time" class="form-control" id="rportJamStart">
-                                    -
-                                    <input type="time" class="form-control" id="rportJamEnd">
-                                </div>
-                                <div class="m-3">
-                                    <div id="jumlah-member-hadir" class="btn btn-info fw-bold">0 Member</div>
+                                    <input type="text" class="form-control dateofBirth" id="tanggal">
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table style="width: 100%" id="dataTables" class="table table-hover mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-capitalize">No</th>
-                                            <th class="text-capitalize">nama</th>
-                                            <th class="text-capitalize">tanggal</th>
-                                            <th class="text-capitalize">jam</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            <div class="row" id="rekap-absen">
+                                <!-- hasil loop dari backend -->
                             </div>
                         </div>
                     </div>
@@ -95,69 +78,61 @@
 @endsection
 @push('scripts')
     <script>
-        const initDatatable = () => {
-
-            if ($.fn.DataTable.isDataTable('#dataTables')) {
-                $('#dataTables').DataTable().clear().destroy();
-            }
-
-            $('#dataTables').DataTable({
-                responsive: true,
-                pageLength: 10,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{{ route('admin.absen-get') }}",
-                    data: function(d) {
-
-                        // ====== FILTER TANGGAL ======
-                        let tanggal = $('#reportrange').val().split(' - ');
-                        if (tanggal.length === 2) {
-                            d.tanggal_awal = moment(tanggal[0], 'MM/DD/YYYY').format('DD-MM-YYYY');
-                            d.tanggal_akhir = moment(tanggal[1], 'MM/DD/YYYY').format('DD-MM-YYYY');
-                        }
-
-                        // ====== FILTER JAM RANGE ======
-                        d.jam_absen_start = $('#rportJamStart').val();
-                        d.jam_absen_end = $('#rportJamEnd').val();
-                    },
-                    dataSrc: function(json) {
-                        // Update jumlah member hadir
-                        $('#jumlah-member-hadir').text(json.recordsFiltered +
-                            " Member");
-                        return json.data;
-                    }
-                },
-                columns: [{
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        data: 'nama'
-                    },
-                    {
-                        data: 'tanggal_absen'
-                    },
-                    {
-                        data: 'jam_absen'
-                    },
-                ],
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".dateofBirth").forEach(function(el) {
+                new Datepicker(el, {
+                    format: "dd-mm-yyyy",
+                    autohide: true,
+                    clearBtn: true
+                });
             });
-        };
+        });
 
         $(function() {
 
-            $('#reportrange').on('apply.daterangepicker', function() {
-                $('#dataTables').DataTable().ajax.reload();
+            $('#tanggal').on('change', function() {
+                let tanggal = $(this).val();
+                if (!tanggal) return;
+
+                $.ajax({
+                    url: "{{ route('admin.absen-harian-data') }}",
+                    type: "GET",
+                    data: {
+                        tanggal: tanggal
+                    }, // ✅ hanya tanggal
+                    success: function(res) {
+                        if (res.status !== 'success') return;
+
+                        let container = $('#rekap-absen');
+                        container.empty();
+
+                        res.data.forEach(item => {
+                            let jam = item.range_jam.split(' - ');
+
+                            container.append(`
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <div class="m-3 d-flex align-items-center gap-3">
+                                    <input type="text" class="form-control" value="${jam[0]}" readonly>
+                                    -
+                                    <input type="text" class="form-control" value="${jam[1]}" readonly>
+                                </div>
+                                <div class="m-3">
+                                    <div class="btn btn-info fw-bold">
+                                        ${item.total_absen} Member
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                        });
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data absensi');
+                    }
+                });
             });
 
-            $('#rportJamStart').add('#rportJamEnd').on('change', function() {
-                $('#dataTables').DataTable().ajax.reload();
-            });
-
-            initDatatable();
         });
     </script>
 @endpush

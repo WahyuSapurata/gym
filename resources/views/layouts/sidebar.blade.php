@@ -64,6 +64,20 @@
                         </a>
                     </li>
 
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'absen-harian' ? 'active' : '' }}">
+                        <a href="{{ route('admin.absen-harian') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-calendar"></i></span>
+                            <span class="nxl-mtext">Absensi Harian</span>
+                        </a>
+                    </li>
+
+                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'absen' ? 'active' : '' }}">
+                        <a href="{{ route('admin.absen') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-clock"></i></span>
+                            <span class="nxl-mtext">Laporan Absensi</span>
+                        </a>
+                    </li>
+
                     <li class="nxl-item nxl-hasmenu {{ $path[1] === 'transaksi-clas' ? 'active' : '' }}">
                         <a href="{{ route('admin.transaksi-clas') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-credit-card"></i></span>
@@ -82,13 +96,6 @@
                         <a href="{{ route('admin.oprasional') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-truck"></i></span>
                             <span class="nxl-mtext">Operasional</span>
-                        </a>
-                    </li>
-
-                    <li class="nxl-item nxl-hasmenu {{ $path[1] === 'absen' ? 'active' : '' }}">
-                        <a href="{{ route('admin.absen') }}" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-clock"></i></span>
-                            <span class="nxl-mtext">Absensi</span>
                         </a>
                     </li>
 
