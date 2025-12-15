@@ -8,6 +8,10 @@
         background-color: var(--bs-btn-hover-bg);
         border-color: var(--bs-btn-hover-border-color);
     }
+
+    .nxl-container .nxl-content .main-content {
+        overflow: visible !important;
+    }
 </style>
 @section('content')
     <div class="nxl-content">
@@ -63,6 +67,7 @@
                         <div class="card-body custom-card-action p-0">
                             <div class="d-flex align-items-center">
                                 <div class="m-3">
+                                    <label for="tanggal" class="form-label">Filter Tanggal</label>
                                     <input type="text" class="form-control dateofBirth" id="tanggal">
                                 </div>
                             </div>
@@ -80,59 +85,56 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".dateofBirth").forEach(function(el) {
-                new Datepicker(el, {
+                const picker = new Datepicker(el, {
                     format: "dd-mm-yyyy",
                     autohide: true,
                     clearBtn: true
                 });
-            });
-        });
 
-        $(function() {
+                el.addEventListener('changeDate', function(e) {
+                    let tanggal = el.value;
+                    if (!tanggal) return;
 
-            $('#tanggal').on('change', function() {
-                let tanggal = $(this).val();
-                if (!tanggal) return;
+                    $.ajax({
+                        url: "{{ route('admin.absen-harian-data') }}", // pastikan nama route benar
+                        type: "GET",
+                        data: {
+                            tanggal: tanggal
+                        },
+                        success: function(res) {
+                            if (res.status !== 'success') return;
 
-                $.ajax({
-                    url: "{{ route('admin.absen-harian-data') }}",
-                    type: "GET",
-                    data: {
-                        tanggal: tanggal
-                    }, // ✅ hanya tanggal
-                    success: function(res) {
-                        if (res.status !== 'success') return;
+                            let container = $('#rekap-absen');
+                            container.empty();
 
-                        let container = $('#rekap-absen');
-                        container.empty();
+                            res.data.forEach(item => {
+                                let jam = item.range_jam.split(' - ');
 
-                        res.data.forEach(item => {
-                            let jam = item.range_jam.split(' - ');
-
-                            container.append(`
-                        <div class="col-md-4">
-                            <div class="d-flex align-items-center">
-                                <div class="m-3 d-flex align-items-center gap-3">
-                                    <input type="text" class="form-control" value="${jam[0]}" readonly>
-                                    -
-                                    <input type="text" class="form-control" value="${jam[1]}" readonly>
-                                </div>
-                                <div class="m-3">
-                                    <div class="btn btn-info fw-bold">
-                                        ${item.total_absen} Member
+                                container.append(`
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="m-3 d-flex align-items-center gap-3">
+                                                <input type="text" class="form-control" value="${jam[0]}" readonly>
+                                                -
+                                                <input type="text" class="form-control" value="${jam[1]}" readonly>
+                                            </div>
+                                            <div class="m-3">
+                                                <div class="btn btn-info fw-bold">
+                                                    ${item.total_absen} Member
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                        });
-                    },
-                    error: function() {
-                        alert('Gagal mengambil data absensi');
-                    }
+                                `);
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText);
+                            alert('Gagal mengambil data absensi');
+                        }
+                    });
                 });
             });
-
         });
     </script>
 @endpush

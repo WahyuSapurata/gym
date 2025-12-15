@@ -153,7 +153,7 @@ class AbsensiController extends BaseController
             DB::raw("HOUR(jam_absen) as jam"),
             DB::raw("COUNT(*) as total")
         )
-            ->whereDate('tanggal_absen', $tanggal)
+            ->where('tanggal_absen', $tanggal)
             ->whereTime('jam_absen', '>=', '06:00')
             ->whereTime('jam_absen', '<', '22:00')
             ->groupBy(DB::raw("HOUR(jam_absen)"))

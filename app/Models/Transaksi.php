@@ -19,6 +19,7 @@ class Transaksi extends Model
         'tipe_member',
         'no_invoice',
         'jenis_pembayaran',
+        'tanggal_pembayaran',
         'total_bayar',
         'tanggal_mulai',
         'tanggal_selesai',

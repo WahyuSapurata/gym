@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransaksiRequest;
 use App\Http\Requests\UpdateTransaksiRequest;
+use App\Models\Absensi;
 use App\Models\Member;
 use App\Models\Paket;
 use App\Models\Transaksi;
@@ -388,6 +389,18 @@ class TransaksiController extends BaseController
         ]);
     }
 
+    public function edit_pembayaran(Request $request, $params)
+    {
+        $transaksi = Transaksi::where('uuid', $params)->firstOrFail();
+        $transaksi->tanggal_pembayaran = $request->tanggal_pembayaran;
+        $transaksi->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Transaksi pembayaran berhasil di perbarui.'
+        ]);
+    }
+
     public function invoiceView($uuid)
     {
         $transaksi = Transaksi::with(['member.user', 'paket'])->where('uuid', $uuid)->firstOrFail();
@@ -395,6 +408,7 @@ class TransaksiController extends BaseController
         $data = [
             'invoice_no'     => $transaksi->no_invoice,
             'tanggal'        => \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y'),
+            'tanggal_pembayaran' => \Carbon\Carbon::parse($transaksi->tanggal_pembayaran)->translatedFormat('d F Y'),
             'nama_member'    => $transaksi->member->user->nama,
             'no_member'      => $transaksi->member->member_id,
             'telepon'        => $transaksi->member->nomor_telepon,
@@ -663,6 +677,8 @@ class TransaksiController extends BaseController
             ], 404);
         }
 
+        $sesi = Absensi::where('uuid_member', $transaksi->uuid_member)->count();
+
         // ===============================
         // VALIDASI TANGGAL ABSENSI
         // ===============================
@@ -699,6 +715,8 @@ class TransaksiController extends BaseController
                 'foto_member' => $member->foto_member ? $member->foto_member : null,
                 'tanggal_mulai' => $transaksi->tanggal_mulai,
                 'tanggal_selesai' => $transaksi->tanggal_selesai,
+                'sesi' => $transaksi->remaining_session ?? null,
+                'sisa_sesi' => $transaksi->remaining_session ? $transaksi->remaining_session - $sesi : null,
             ]
         ]);
     }

@@ -79,6 +79,8 @@ Route::group([
 
     Route::post('/edit-tanggal-expired/{params}', [App\Http\Controllers\TransaksiController::class, 'editTanggalExpired'])->name('edit-tanggal-expired');
 
+    Route::post('/edit-tanggal-pembayaran/{params}', [App\Http\Controllers\TransaksiController::class, 'edit_pembayaran'])->name('edit-tanggal-pembayaran');
+
     Route::get('/get-perpanjang-data/{params}', [App\Http\Controllers\TransaksiController::class, 'getDataPerpanjang'])->name('get-perpanjang-data');
     Route::post('/perpanjang-member/{params}', [App\Http\Controllers\TransaksiController::class, 'perpanjangMember'])->name('perpanjang-member');
 

@@ -169,7 +169,7 @@
             </div>
             <div class="invoice-info">
                 <p>No. Invoice : {{ $invoice_no }}</p>
-                <p>Tanggal : {{ $tanggal }}</p>
+                <p>Tanggal : {{ $tanggal_pembayaran ? $tanggal_pembayaran : $tanggal_bayar }}</p>
             </div>
         </div>
 
@@ -205,7 +205,7 @@
             <p><strong>Metode Pembayaran :</strong>
                 {{ $metode == 'Tunai' ? $metode . '' : $metode . ' (A.n G-Rind Up Fitness 1)' }}
             </p>
-            <p><strong>Tanggal Bayar :</strong> {{ $tanggal_bayar }}</p>
+            <p><strong>Tanggal Bayar :</strong> {{ $tanggal_pembayaran ? $tanggal_pembayaran : $tanggal_bayar }}</p>
         </div>
 
         <div class="footer">

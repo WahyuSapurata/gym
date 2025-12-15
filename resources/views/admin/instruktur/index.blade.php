@@ -109,7 +109,7 @@
                             <select id="kategori" name="kategori" data-placeholder="Pilih inputan"
                                 class="form-select basic-usage">
                                 <option value="">-- Pilih Instruktur --</option>
-                                <option value="Instruktur Clas">Instruktur Clas</option>
+                                <option value="Instruktur Class">Instruktur Class</option>
                                 <option value="Personal Traner">Personal Traner</option>
                             </select>
                             <div class="invalid-feedback"></div>

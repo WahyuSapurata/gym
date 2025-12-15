@@ -268,6 +268,32 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-pembayaran" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+        aria-labelledby="modal-pembayaranLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="form-pembayaran" enctype="multipart/form-data">
+                <input type="hidden" name="uuid" id="uuid-pembayaran">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Form Edit Tanggal Pembayaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="text-capitalize form-label">tanggal mulai</label>
+                            <input type="text" name="tanggal_pembayaran" id="tanggal_pembayaran"
+                                class="form-control dateofBirth">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -601,6 +627,38 @@
             });
         });
 
+        // Klik tombol edit
+        $('#dataTables').on('click', '.pembayaran-edit', function() {
+            let uuid = $(this).data('uuid');
+
+            $('#uuid-pembayaran').val(uuid);
+            $('#modal-pembayaran').modal('show');
+        });
+
+        $('#form-pembayaran').on('submit', function(e) {
+            e.preventDefault(); // hindari reload default
+
+            let uuid = $('#uuid-pembayaran').val();
+
+            $.ajax({
+                url: '/admin/edit-tanggal-pembayaran/' + uuid,
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    Swal.fire({
+                        title: "Berhasil",
+                        text: res.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modal-pembayaran').modal('hide');
+                    $('#dataTables').DataTable().ajax.reload();
+                }
+            });
+        });
+
         $('#dataTables').on('click', '.cetak', function() {
             let uuid = $(this).data('uuid');
             window.open('/admin/cetak-invoice/' + uuid, '_blank');
@@ -822,6 +880,9 @@
                                     </a>
                                     <a href="#" data-uuid="${data}" class="btn btn-outline-success perpanjang-member btn-sm">
                                         Perpanjang Member
+                                    </a>
+                                    <a href="#" data-uuid="${data}" class="btn btn-outline-info pembayaran-edit btn-sm">
+                                        Edit Tanggal Pembayaran
                                     </a>
                                     <a href="#" class="avatar-text avatar-md delete" data-uuid="${data}">
                                         <!-- Icon Delete -->
