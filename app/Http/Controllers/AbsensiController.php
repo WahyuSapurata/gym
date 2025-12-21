@@ -139,6 +139,14 @@ class AbsensiController extends BaseController
             ]);
         }
 
+        // ========= FILTER TIPE MEMBER ==========
+        if ($request->filled('tipe_member')) {
+            $query->whereHas('member.transaksis', function ($q) use ($request) {
+                $q->where('is_active', 1)
+                    ->where('tipe_member', $request->tipe_member);
+            });
+        }
+
         $absensis = $query->get();
 
         return response()->json([
