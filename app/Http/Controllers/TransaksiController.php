@@ -496,6 +496,7 @@ class TransaksiController extends BaseController
             'Nomor Telepon' => $member->nomor_telepon,
             'Jenis Kelamin' => $member->jenis_kelamin,
             'Masa Aktif' => $transaksi->tanggal_mulai . ' s/d ' . $transaksi->tanggal_selesai,
+            $transaksi->remaining_session !== null ? 'Sesi =>' . $transaksi->remaining_session : '',
         ];
 
         $maxLabelWidth = 250; // agar titik dua sejajar

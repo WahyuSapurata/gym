@@ -61,17 +61,27 @@
                             </div>
                         </div>
                         <div class="card-body custom-card-action p-0">
-                            <div class="d-flex align-items-center">
-                                <div class="m-3">
-                                    <input type="text" class="form-control" id="reportrange">
+                            <div class="d-flex justify-content-between align-items-center me-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="m-3">
+                                        <input type="text" class="form-control" id="reportrange">
+                                    </div>
+                                    <div class="m-3 d-flex align-items-center gap-3">
+                                        <input type="time" class="form-control" id="rportJamStart">
+                                        -
+                                        <input type="time" class="form-control" id="rportJamEnd">
+                                    </div>
+                                    <div class="m-3">
+                                        <div id="jumlah-member-hadir" class="btn btn-info fw-bold">0 Member</div>
+                                    </div>
                                 </div>
-                                <div class="m-3 d-flex align-items-center gap-3">
-                                    <input type="time" class="form-control" id="rportJamStart">
-                                    -
-                                    <input type="time" class="form-control" id="rportJamEnd">
-                                </div>
-                                <div class="m-3">
-                                    <div id="jumlah-member-hadir" class="btn btn-info fw-bold">0 Member</div>
+                                <div>
+                                    <select id="tipe-member" class="form-select">
+                                        <option value="">-- Pilih Tipe Member --</option>
+                                        <option value="GYM">GYM</option>
+                                        <option value="FUNGSIONAL">FUNGSIONAL</option>
+                                        <option value="STUDIO">STUDIO</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -120,6 +130,8 @@
                         // ====== FILTER JAM RANGE ======
                         d.jam_absen_start = $('#rportJamStart').val();
                         d.jam_absen_end = $('#rportJamEnd').val();
+                        // ====== FILTER TIPE MEMBER ======
+                        d.tipe_member = $('#tipe-member').val();
                     },
                     dataSrc: function(json) {
                         // Update jumlah member hadir
@@ -154,6 +166,10 @@
             });
 
             $('#rportJamStart').add('#rportJamEnd').on('change', function() {
+                $('#dataTables').DataTable().ajax.reload();
+            });
+
+            $('#tipe-member').on('change', function() {
                 $('#dataTables').DataTable().ajax.reload();
             });
 

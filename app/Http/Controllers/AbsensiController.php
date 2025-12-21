@@ -24,12 +24,16 @@ class AbsensiController extends BaseController
             'absensis.uuid_member',
             'absensis.tanggal_absen',
             'absensis.jam_absen',
-            'members.uuid',
             'users.nama',
+            'transaksis.tipe_member',
         ];
 
         $baseQuery = Absensi::leftJoin('members', 'members.uuid', '=', 'absensis.uuid_member')
-            ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user');
+            ->leftJoin('users', 'users.uuid', '=', 'members.uuid_user')
+            ->leftJoin('transaksis', function ($join) {
+                $join->on('transaksis.uuid_member', '=', 'members.uuid')
+                    ->where('transaksis.is_active', 1);
+            });
 
         // ========= FILTER TANGGAL ==========
         if ($request->filled('tanggal_awal') && $request->filled('tanggal_akhir')) {
@@ -47,6 +51,11 @@ class AbsensiController extends BaseController
             ]);
         }
 
+        // ========= FILTER TIPE MEMBER ==========
+        if ($request->filled('tipe_member')) {
+            $baseQuery->where('transaksis.tipe_member', $request->tipe_member);
+        }
+
         // === Hitung member hadir (unique member) ===
         $jumlah_member_hadir = (clone $baseQuery)->distinct('absensis.uuid_member')->count('absensis.uuid_member');
 
@@ -57,7 +66,8 @@ class AbsensiController extends BaseController
             'absensis.tanggal_absen',
             'absensis.jam_absen',
             'members.uuid as uuid_user',
-            'users.nama as nama'
+            'users.nama as nama',
+            'transaksis.tipe_member'
         );
 
         // ========= SEARCH ==========

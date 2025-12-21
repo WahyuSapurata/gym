@@ -14,7 +14,7 @@ class ClasController extends BaseController
     public function index()
     {
         $module = 'Class';
-        $instruktur = Instruktur::where('kategori', 'Instruktur Clas')->get();
+        $instruktur = Instruktur::where('kategori', 'Instruktur Class')->get();
         return view('admin.clas.index', compact('module', 'instruktur'));
     }
 
