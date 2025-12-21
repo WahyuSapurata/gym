@@ -499,7 +499,7 @@ class TransaksiController extends BaseController
         ];
 
         // ✅ Tambahkan sesi HANYA jika ada
-        if ($transaksi->remaining_session == 0) {
+        if ($transaksi->remaining_session != 0) {
             $labels['Sisa Sesi'] = $transaksi->remaining_session;
         }
 
