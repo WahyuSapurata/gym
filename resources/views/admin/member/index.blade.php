@@ -304,6 +304,16 @@
             initSelect2($(this));
         });
 
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".dateofBirth").forEach(function(el) {
+                const picker = new Datepicker(el, {
+                    format: "dd-mm-yyyy",
+                    autohide: true,
+                    clearBtn: true
+                });
+            });
+        });
+
         // Pasang CSRF token untuk semua request AJAX
         $.ajaxSetup({
             headers: {
