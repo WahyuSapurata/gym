@@ -485,8 +485,8 @@ class TransaksiController extends BaseController
 
         // Posisi awal teks
         $startX = 70;
-        $startY = 193;
-        $lineHeight = 33;
+        $startY = 180;
+        $lineHeight = 31;
 
         $labels = [
             'Nama' => $member->user->nama,
@@ -687,21 +687,24 @@ class TransaksiController extends BaseController
         // ===============================
         // VALIDASI TANGGAL ABSENSI
         // ===============================
-        $today = Carbon::today();
+        $today = Carbon::now()->format('Y-m-d');
 
-        $tanggalMulai   = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_mulai);
-        $tanggalSelesai = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_selesai);
+        $tanggalMulai = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_mulai)
+            ->format('Y-m-d');
 
-        if ($today->lt($tanggalMulai)) {
+        $tanggalSelesai = Carbon::createFromFormat('d-m-Y', $transaksi->tanggal_selesai)
+            ->format('Y-m-d');
+
+        if ($today < $tanggalMulai) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Absensi belum bisa dilakukan. Belum masuk tanggal mulai.'
             ], 403);
         }
 
-        if ($today->gt($tanggalSelesai)) {
+        if ($today > $tanggalSelesai) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Masa aktif member sudah berakhir.'
             ], 403);
         }

@@ -188,4 +188,24 @@ class Auth extends BaseController
 
         return $this->sendResponse('Success', 'Berhasil logout');
     }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return $this->sendError('Gagal', ['error' => 'Password lama tidak sesuai'], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->password_hash = $request->new_password;
+        $user->save();
+
+        return $this->sendResponse(null, 'Password berhasil diubah');
+    }
 }
