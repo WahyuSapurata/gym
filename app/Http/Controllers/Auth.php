@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use SebastianBergmann\FileIterator\Facade;
 
 class Auth extends BaseController
 {
@@ -191,13 +192,12 @@ class Auth extends BaseController
 
     public function updatePassword(Request $request)
     {
-        dd($request->all());
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|min:6|confirmed',
         ]);
 
-        $user = $request->user();
+        $user = User::where('uuid', $request->uuid_user)->firstOrFail();
 
         if (!Hash::check($request->old_password, $user->password)) {
             return $this->sendError('Gagal', ['error' => 'Password lama tidak sesuai'], 400);
