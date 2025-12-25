@@ -192,11 +192,6 @@ class Auth extends BaseController
 
     public function updatePassword(Request $request)
     {
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-        ]);
-
         $user = User::where('uuid', $request->uuid_user)->firstOrFail();
 
         if (!Hash::check($request->old_password, $user->password)) {
