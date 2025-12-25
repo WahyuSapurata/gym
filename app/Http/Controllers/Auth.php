@@ -191,6 +191,7 @@ class Auth extends BaseController
 
     public function updatePassword(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|min:6|confirmed',
