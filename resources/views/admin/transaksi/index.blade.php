@@ -206,7 +206,7 @@
 
                         <div class="mb-2">
                             <label class="form-label">Nama Paket</label>
-                            <select id="uuid_paket" name="uuid_paket" class="form-select basic-usage">
+                            <select id="uuid_paket_expired" name="uuid_paket" class="form-select basic-usage">
                                 <option value="">-- Pilih nama paket --</option>
                                 @foreach ($paket as $p)
                                     <option value="{{ $p->uuid }}">{{ $p->nama_paket }}</option>

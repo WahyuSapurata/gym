@@ -35,7 +35,7 @@ class TransaksiController extends BaseController
             ->select('members.uuid', 'users.nama', 'users.username', 'members.tipe_member', 'members.status_member')
             ->get();
 
-        $paket = Paket::all();
+        $paket = Paket::where('status', 'Aktiv')->get();
 
         return view('admin.transaksi.index', compact('module', 'member', 'paket'));
     }
