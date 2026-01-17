@@ -355,7 +355,7 @@
                         <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-user-dropdown">
                             <div class="dropdown-header">
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ asset('logo_favicon.png') }}" alt="user-image"
+                                    <img src="{{ asset('logodark.PNG') }}" alt="user-image"
                                         class="img-fluid user-avtar" />
                                     <div>
                                         <h6 class="text-dark mb-0">{{ auth()->user()->nama }}</h6>
