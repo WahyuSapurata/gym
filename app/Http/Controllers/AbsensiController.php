@@ -166,22 +166,20 @@ class AbsensiController extends BaseController
     {
         $tanggal = $request->tanggal;
 
-        // Ambil jumlah absen per jam
+        // Ambil jumlah absen per jam (0 - 23)
         $data = Absensi::select(
             DB::raw("HOUR(jam_absen) as jam"),
             DB::raw("COUNT(*) as total")
         )
             ->where('tanggal_absen', $tanggal)
-            ->whereTime('jam_absen', '>=', '06:00')
-            ->whereTime('jam_absen', '<', '22:00')
             ->groupBy(DB::raw("HOUR(jam_absen)"))
             ->orderBy('jam')
             ->get();
 
-        // Buat range jam 06 - 22 (biar jam kosong tetap tampil)
+        // Buat range jam 00 - 24 (biar jam kosong tetap tampil)
         $result = [];
 
-        for ($jam = 6; $jam < 22; $jam++) {
+        for ($jam = 0; $jam < 24; $jam++) {
             $found = $data->firstWhere('jam', $jam);
 
             $result[] = [
