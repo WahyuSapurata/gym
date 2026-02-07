@@ -709,6 +709,13 @@ class TransaksiController extends BaseController
             ], 403);
         }
 
+        if ($transaksi->remaining_session !== null && $sesi >= $transaksi->remaining_session) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Sesi absensi sudah habis.'
+            ], 403);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => [
