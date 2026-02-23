@@ -46,6 +46,7 @@ Route::middleware('cors')->group(function () {
 
             Route::post('/api-absensi-create/{uuid_member}', [App\Http\Controllers\AbsensiController::class, 'store']);
             Route::get('/api-get-absensi', [App\Http\Controllers\AbsensiController::class, 'getAbsensiApi']);
+            Route::get('/api-get-absensi-member/{member_id}', [TransaksiController::class, 'getDataByMemberidAbsen']);
         });
 
         Route::middleware('role:member')->group(function () {
